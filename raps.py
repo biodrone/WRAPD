@@ -61,24 +61,30 @@ def main(argv):
         ssid = "kawaii-fi"
         bssid = "DE:AD:BE:EF:CO:FE"
         channel = "1"
-        ap2 = {"BSSID":"DE:AD:BE:EF:CO:FF", "SSID":ssid + "bawlz", "CHANNEL":channel, "SEEN":utc}
+        #ap2 = {"BSSID":"DE:AD:BE:EF:CO:FF", "SSID":ssid + "bawlz", "CHANNEL":channel, "SEEN":utc}
+        apFound = 0 #var to control whether the AP was found in the database
         #TODO: search db for BSSID in case it's already there
-        if collk.count({'SSID':ssid}) > 0:
+        if collk.count({'SSID':ssid}) > 0: #check if there's actuall any APs in the db
             for a in collk.find({'SSID':ssid}, {'BSSID':1, '_id':0}):
                 if str(a[u'BSSID']) == bssid: #matches the bssid supplied to the one in the db
                     print "the shit is rogue! DO ROGUE THINGS TO IT!"
-                else:
-                    ap = {"BSSID":bssid, "SSID":ssid, "CHANNEL":channel, "SEEN":utc}
-                    collk.append(ap)
-                    print "BSSID: " + bssid + " with SSID: " + ssid + " added to DB."
+                    apFound = 1
+            if apFound == 0:
+                ap = {"BSSID":bssid, "SSID":ssid, "CHANNEL":channel, "SEEN":utc}
+                collk.insert(ap)
+                print "BSSID: " + bssid + " with SSID: " + ssid + " added to DB."
                 #print str(collk.count({'SSID':ssid})) + " occurences of the SSID " + ssid + " already in database with BSSID of " + str(a[u'BSSID'])
+        else: #in case there's nothing in the db
+            ap = {"BSSID":bssid, "SSID":ssid, "CHANNEL":channel, "SEEN":utc}
+            collk.insert(ap)
+            print "BSSID: " + bssid + " with SSID: " + ssid + " added to DB."
         #collk.insert(ap)
         #collk.insert(ap2)
-        #print "collk %s" % collk
-        #print "collu %s" % collu
-        #print collk.count()
-        #for a in collk.find(): #loops over the collection and prints each document
-            #print a
+        print "collk %s" % collk
+        print "collu %s" % collu
+        print collk.count()
+        for a in collk.find(): #loops over the collection and prints each document
+            print a
         #print collk.find_one()
 
     if args.install: #TODO: eventually make this a function triggered if the dir doesn't exist each run
