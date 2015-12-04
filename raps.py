@@ -14,7 +14,9 @@ General TODO:
 - Use curses or some form of GUI to display log file to terminal
 - Add an install option
 - Have a DB of known default SSIDs for quick detection
-
+- Fix mongo DBs because currently everything is going towards the known APs DB,
+    need to go to unknown if not in known as known will be preconfigured (or possbly set up on first run?)
+    
 """
 
 import os
