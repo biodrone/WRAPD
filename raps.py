@@ -15,8 +15,9 @@ General TODO:
 - Add an install option
 - Have a DB of known default SSIDs for quick detection
 - Fix mongo DBs because currently everything is going towards the known APs DB,
-    need to go to unknown if not in known as known will be preconfigured (or possbly set up on first run?)
-    
+    need to go to unknown if not in known as known will be preconfigured (or possibly set up on first run?)
+- Have a point that the user can see the contents of the unknown DB and pick whether to add to known or rogue
+
 """
 
 import os
@@ -57,34 +58,39 @@ def main(argv):
         db = conn.aps
         collk = db.known_aps
         collu = db.unknown_aps
+        collr = db.rogue_aps
         #collk.remove({}) #remove all documents from collection
         #collu.remove({})
         utc = datetime.datetime.utcnow()
         ssid = "kawaii-fi"
-        bssid = "DE:AD:BE:EF:CO:FE"
+        bssid = "DE:AD:BE:EF:CO:FF"
         channel = "1"
         #ap2 = {"BSSID":"DE:AD:BE:EF:CO:FF", "SSID":ssid + "bawlz", "CHANNEL":channel, "SEEN":utc}
         apFound = 0 #var to control whether the AP was found in the database
         #TODO: search db for BSSID in case it's already there
-        if collk.count({'SSID':ssid}) > 0: #check if there's actuall any APs in the db
-            for a in collk.find({'SSID':ssid}, {'BSSID':1, '_id':0}):
-                if str(a[u'BSSID']) == bssid: #matches the bssid supplied to the one in the db
-                    print "the shit is rogue! DO ROGUE THINGS TO IT!"
+        if collk.count({'SSID':ssid}) > 0: #check if there's actually any APs in the db
+            for a in collk.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, '_id':0}): #check for matches with SSID
+                if str(a[u'BSSID']) == bssid: #check for matches with BSSID
+                    print "Expected AP %s as all elements match." % str(a[u'SSID'])
+                    apFound = 1 #have this become a breakout from the loop eventually
+                else: #if BSSID doesn't match
                     apFound = 1
+                    ap = {"BSSID":bssid, "SSID":ssid, "CHANNEL":channel, "SEEN":utc}
+                    collr.insert(ap)
+                    print "BSSID: " + bssid + " with SSID: " + ssid + " added to Rogue AP DB."
             if apFound == 0:
                 ap = {"BSSID":bssid, "SSID":ssid, "CHANNEL":channel, "SEEN":utc}
-                collk.insert(ap)
-                print "BSSID: " + bssid + " with SSID: " + ssid + " added to DB."
-                #print str(collk.count({'SSID':ssid})) + " occurences of the SSID " + ssid + " already in database with BSSID of " + str(a[u'BSSID'])
+                collu.insert(ap)
+                print "BSSID: " + bssid + " with SSID: " + ssid + " added to Unkown AP DB."
         else: #in case there's nothing in the db
-            ap = {"BSSID":bssid, "SSID":ssid, "CHANNEL":channel, "SEEN":utc}
-            collk.insert(ap)
-            print "BSSID: " + bssid + " with SSID: " + ssid + " added to DB."
+            print "There is nothing in the known database, please run RAPS with the install flag set."
         #collk.insert(ap)
         #collk.insert(ap2)
-        print "collk %s" % collk
-        print "collu %s" % collu
-        print collk.count()
+        #print "collk %s" % collk
+        #print "collu %s" % collu
+        print "collk has %s records." % collk.count()
+        print "collu has %s records." % collu.count()
+        print "collr has %s records." % collr.count()
         for a in collk.find(): #loops over the collection and prints each document
             print a
         #print collk.find_one()
