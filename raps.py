@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 """
-RAPS - Rogue AP Scanner
+RAPS - Rogue AP Scanner(Suite)
 
 author: bi0dr0ned at gmail
 
