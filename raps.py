@@ -43,7 +43,7 @@ def main(argv):
     parser.add_argument('-f', '--fightback', action='store_true', help='Fights back against Rogue AP with Reaver and Honey Pot')
     parser.add_argument('-t', '--temp', action='store_true', help='For temp testing only, remove in live code',)
     #TODO: Remove -i for install, install by default and have -i for interface
-    #TODO: add arg for db location (or have a default location)
+    #TODO: add arg for db location (or have a default location of /opt/raps)
     args = parser.parse_args()
 
     if args.temp:
