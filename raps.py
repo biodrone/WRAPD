@@ -47,7 +47,7 @@ def main(argv):
     args = parser.parse_args()
 
     if args.temp:
-        #find out how to put the mondodb stuff in a different location
+        #find out how to put the mongodb stuff in a different location
         try:
             conn=pymongo.MongoClient()
             print "Connected successfully!!!"
