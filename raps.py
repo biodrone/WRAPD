@@ -118,8 +118,8 @@ def main(argv):
 
     if args.auto: #TODO: Spawn a thread based on this
         print 'Running RAPS in auto mode'
-        scanint = args.interface
-        aircom = "airodump-ng --output-format csv --write %s/rapsdump mon0" % ipath
+        scanint = 'wlan1' #eventually make this a cmd flag
+        aircom = "airodump-ng --output-format csv --write %s/rapsdump %s" % (ipath, scanint + 'mon')
         fo = open("/proc/net/dev", 'rb')
         if fo.read().find("mon0") == -1:
             call(['airmon-ng', 'start', scanint]) #add logic to determine which interface to put in mon
@@ -127,7 +127,7 @@ def main(argv):
         p = Popen([aircom], stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
         time.sleep(10)
         os.kill(p.pid, SIGTERM)
-        #call(['airmon-ng', 'stop', 'wlan1']) #FIXME: THIS STILL FUCKS UP THE GUI!!!! FIX IT!!!!!11!!1
+        call(['airmon-ng', 'stop', scanint + 'mon']) #FIXME: THIS STILL FUCKS UP THE GUI!!!! FIX IT!!!!!11!!1
 
 def readdump(): #TODO: actually start this...
     global ipath
