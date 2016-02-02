@@ -141,5 +141,8 @@ def readdump(): #TODO: actually start this...
         #add a check here for thread.stopped
         #so that the thread can terminate
 
+def snmpScan(): #TODO: actually start this...
+    
+
 if __name__ == "__main__":
     main(sys.argv)
