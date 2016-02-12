@@ -118,6 +118,52 @@ def main(argv):
 
     if args.auto: #TODO: Spawn a thread based on this
         print 'Running RAPS in auto mode'
+        try:
+            conn=pymongo.MongoClient()
+            print "Connected successfully!!!"
+        except pymongo.errors.ConnectionFailure, e:
+            print "Could not connect to MongoDB: %s" % e
+            sys.exit()
+
+        #TODO: do some logic here to determine if a db exists already
+        db = conn.aps
+        collk = db.known_aps
+        collu = db.unknown_aps
+        collr = db.rogue_aps
+        #collk.remove({}) #remove all documents from collection
+        #collu.remove({})
+        utc = datetime.datetime.utcnow()
+        ssid = "kawaii-fi"
+        bssid = "DE:AD:BE:EF:CO:FF"
+        channel = "1"
+        #ap2 = {"BSSID":"DE:AD:BE:EF:CO:FF", "SSID":ssid + "bawlz", "CHANNEL":channel, "SEEN":utc}
+        apFound = 0 #var to control whether the AP was found in the database
+        #TODO: search db for BSSID in case it's already there
+        if collk.count({'SSID':ssid}) > 0: #check if there's actually any APs in the db
+            for a in collk.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, '_id':0}): #check for matches with SSID
+                if str(a[u'BSSID']) == bssid: #check for matches with BSSID
+                    print "Expected AP %s as all elements match." % str(a[u'SSID'])
+                    apFound = 1 #have this become a breakout from the loop eventually
+                else: #if BSSID doesn't match
+                    apFound = 1
+                    ap = {"BSSID":bssid, "SSID":ssid, "CHANNEL":channel, "SEEN":utc}
+                    collr.insert(ap)
+                    print "BSSID: " + bssid + " with SSID: " + ssid + " added to Rogue AP DB."
+            if apFound == 0:
+                ap = {"BSSID":bssid, "SSID":ssid, "CHANNEL":channel, "SEEN":utc}
+                collu.insert(ap)
+                print "BSSID: " + bssid + " with SSID: " + ssid + " added to Unkown AP DB."
+        else: #in case there's nothing in the db
+            print "There is nothing in the known database, please run RAPS with the install flag set."
+
+        print "collk has %s records." % collk.count()
+        print "collu has %s records." % collu.count()
+        print "collr has %s records." % collr.count()
+        for a in collk.find(): #loops over the collection and prints each document
+            print a
+        #print collk.find_one()
+        #######################
+
         scanint = 'wlan1' #eventually make this a cmd flag
         aircom = "airodump-ng --output-format csv --write %s/rapsdump %s" % (ipath, scanint + 'mon')
         fo = open("/proc/net/dev", 'rb')
@@ -127,7 +173,7 @@ def main(argv):
         p = Popen([aircom], stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
         time.sleep(10)
         os.kill(p.pid, SIGTERM)
-        call(['airmon-ng', 'stop', scanint + 'mon']) #FIXME: THIS STILL FUCKS UP THE GUI!!!! FIX IT!!!!!11!!1
+        call(['airmon-ng', 'stop', scanint + 'mon'])
 
 def readdump(): #TODO: actually start this...
     global ipath
@@ -142,6 +188,7 @@ def readdump(): #TODO: actually start this...
         #so that the thread can terminate
 
 def snmpAsk(): #TODO: actually start this...
+    sIP = '192.168.1.3' #TODO: figure out if this needs to be
     
 
 if __name__ == "__main__":
