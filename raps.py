@@ -178,7 +178,7 @@ def main(argv):
         p = Popen([aircom], stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
         time.sleep(10)
         os.kill(p.pid, SIGTERM)
-        call(['airmon-ng', 'stop', scanint + 'mon'])
+        call(['airmon-ng', 'stop', 'mon0'])
 
 def readdump(): #TODO: actually start this...
     global ipath
