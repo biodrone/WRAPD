@@ -68,6 +68,9 @@ def main(argv):
         #ap2 = {"BSSID":"DE:AD:BE:EF:CO:FF", "SSID":ssid + "bawlz", "CHANNEL":channel, "SEEN":utc}
         apFound = 0 #var to control whether the AP was found in the database
         #TODO: search db for BSSID in case it's already there
+        print "collk has %s records." % collk.count()
+        print "collu has %s records." % collu.count()
+        print "collr has %s records." % collr.count()
         if collk.count({'SSID':ssid}) > 0: #check if there's actually any APs in the db
             for a in collk.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, '_id':0}): #check for matches with SSID
                 if str(a[u'BSSID']) == bssid: #check for matches with BSSID
@@ -88,9 +91,7 @@ def main(argv):
         #collk.insert(ap2)
         #print "collk %s" % collk
         #print "collu %s" % collu
-        print "collk has %s records." % collk.count()
-        print "collu has %s records." % collu.count()
-        print "collr has %s records." % collr.count()
+
         for a in collk.find(): #loops over the collection and prints each document
             print a
         #print collk.find_one()
@@ -189,7 +190,7 @@ def readdump(): #TODO: actually start this...
 
 def snmpAsk(): #TODO: actually start this...
     sIP = '192.168.1.3' #TODO: figure out if this needs to be
-    
+
 
 if __name__ == "__main__":
     main(sys.argv)
