@@ -100,26 +100,26 @@ def main(argv):
             print a
         #print collk.find_one()
 
-    if args.install: #TODO: eventually make this a function triggered if the dir doesn't exist each run
-        print 'Installing...'
-        ud = Popen(["apt-get update"])
-        ins = Popen(["apt-get install aircrack-ng scapy build-essential python-dev -y"])
-        #TODO: do pip install stuff here
-        #TODO: add logic to figure out if RAPS is already installed
-        call(["mkdir", "/opt/raps"])
-        call(['chmod', '775', "/opt/raps"])
-        #connect to MongoDB
-        try:
-            conn=pymongo.MongoClient()
-            print "Connected successfully!!!"
-        except pymongo.errors.ConnectionFailure, e:
-            print "Could not connect to MongoDB: %s" % e
-
-        db = conn.aps
-        collk = db.known_aps
-        collu = db.unknown_apps
-        ap = {"SSID":"kawaii-fi", "BSSID":"DE:AD:BE:EF:CO:FE"}
-        g = Popen(["git clone https://github.com/biodrone/FYP /opt/RAPS/"]) #change this after project
+    # if args.install: #TODO: eventually make this a function triggered if the dir doesn't exist each run
+    #     print 'Installing...'
+    #     ud = Popen(["apt-get update"])
+    #     ins = Popen(["apt-get install aircrack-ng scapy build-essential python-dev -y"])
+    #     #TODO: do pip install stuff here
+    #     #TODO: add logic to figure out if RAPS is already installed
+    #     call(["mkdir", "/opt/raps"])
+    #     call(['chmod', '775', "/opt/raps"])
+    #     #connect to MongoDB
+    #     try:
+    #         conn=pymongo.MongoClient()
+    #         print "Connected successfully!!!"
+    #     except pymongo.errors.ConnectionFailure, e:
+    #         print "Could not connect to MongoDB: %s" % e
+    #
+    #     db = conn.aps
+    #     collk = db.known_aps
+    #     collu = db.unknown_apps
+    #     ap = {"SSID":"kawaii-fi", "BSSID":"DE:AD:BE:EF:CO:FE"}
+    #     g = Popen(["git clone https://github.com/biodrone/FYP /opt/RAPS/"]) #change this after project
 
     if args.auto: #TODO: Spawn a thread based on this
         print 'Running RAPS in auto mode'
