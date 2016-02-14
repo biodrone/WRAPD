@@ -72,6 +72,8 @@ def main(argv):
         #collk.insert(ap2)
         print "collk %s" % collk
         print "collu %s" % collu
+        ap = {"BSSID":bssid, "SSID":ssid, "CHANNEL":channel, "SEEN":utc}
+        collu.insert(ap)
         print "collk has %s records." % collk.count()
         print "collu has %s records." % collu.count()
         print "collr has %s records." % collr.count()
