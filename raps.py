@@ -38,10 +38,11 @@ def main(argv):
     global ipath
 
     parser = argparse.ArgumentParser(usage='Find rogue Access Points within scanning range')
-    parser.add_argument('-i', '--install', action='store_true', help='Install RAPS')
+    #parser.add_argument('-i', '--install', action='store_true', help='Install RAPS')
     parser.add_argument('-a', '--auto', action='store_true', help='Run in auto mode (assumes --fightback)',)
     parser.add_argument('-f', '--fightback', action='store_true', help='Fights back against Rogue AP with Reaver and Honey Pot')
     parser.add_argument('-t', '--temp', action='store_true', help='For temp testing only, remove in live code',)
+    parser.add_argument('-i', '--interface', help='Interface to scan on')
     #TODO: Remove -i for install, install by default and have -i for interface
     #TODO: add arg for db location (or have a default location of /opt/raps)
     args = parser.parse_args()
@@ -168,7 +169,7 @@ def main(argv):
         #print collk.find_one()
         #######################
 
-        scanint = 'wlan1' #eventually make this a cmd flag
+        scanint = args.interface #eventually make this a cmd flag
         aircom = "airodump-ng --output-format csv --write %s/rapsdump %s" % (ipath, scanint + 'mon')
         fo = open("/proc/net/dev", 'rb')
         if fo.read().find("mon0") == -1:
