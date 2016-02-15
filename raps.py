@@ -42,69 +42,15 @@ def main(argv):
     #parser.add_argument('-i', '--install', action='store_true', help='Install RAPS')
     parser.add_argument('-a', '--auto', action='store_true', help='Run in auto mode (assumes --fightback)',)
     parser.add_argument('-f', '--fightback', action='store_true', help='Fights back against Rogue AP with Reaver and Honey Pot')
-    parser.add_argument('-t', '--temp', action='store_true', help='For temp testing only, remove in live code',)
     parser.add_argument('-s', '--snmp', action='store_true', help='For SNMP-only testing before integration into --auto')
     parser.add_argument('-i', '--interface', help='Interface to scan on')
     parser.add_argument('-si', '--switchip', help='IP Address of core switch(es) or file containing IP addresses')
     parser.add_argument('-sc', '--snmpCommunity', help='SNMP Community of switches to be polled')
     parser.add_argument('-sp', '--snmpPort', help='Port that SNMP operates on')
 
-    #TODO: Remove -i for install, install by default and have -i for interface
     #TODO: add arg for db location (or have a default location of /opt/raps)
+    #TODO: have a flag to init the mongodb with a file or a list of MACs
     args = parser.parse_args()
-
-    if args.temp:
-        #find out how to put the mongodb stuff in a different location
-        try:
-            conn=pymongo.MongoClient()
-            print "Connected successfully!!!"
-        except pymongo.errors.ConnectionFailure, e:
-            print "Could not connect to MongoDB: %s" % e
-
-        #TODO: do some logic here to determine if a db exists already
-        db = conn.aps
-        collk = db.known_aps
-        collu = db.unknown_aps
-        collr = db.rogue_aps
-        #collk.remove({}) #remove all documents from collection
-        #collu.remove({})
-        utc = datetime.datetime.utcnow()
-        ssid = "kawaii-fi"
-        bssid = "DE:AD:BE:EF:CO:FF"
-        channel = "1"
-        #ap2 = {"BSSID":"DE:AD:BE:EF:CO:FF", "SSID":ssid + "bawlz", "CHANNEL":channel, "SEEN":utc}
-        apFound = 0 #var to control whether the AP was found in the database
-        #TODO: search db for BSSID in case it's already there
-        #collk.insert(ap)
-        #collk.insert(ap2)
-        print "collk %s" % collk
-        print "collu %s" % collu
-        #ap = {"BSSID":bssid, "SSID":ssid, "CHANNEL":channel, "SEEN":utc}
-        #collu.insert(ap)
-        print "collk has %s records." % collk.count()
-        print "collu has %s records." % collu.count()
-        print "collr has %s records." % collr.count()
-        if collk.count({'SSID':ssid}) > 0: #check if there's actually any APs in the db
-            for a in collk.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, '_id':0}): #check for matches with SSID
-                if str(a[u'BSSID']) == bssid: #check for matches with BSSID
-                    print "Expected AP %s as all elements match." % str(a[u'SSID'])
-                    apFound = 1 #have this become a breakout from the loop eventually
-                else: #if BSSID doesn't match
-                    apFound = 1
-                    ap = {"BSSID":bssid, "SSID":ssid, "CHANNEL":channel, "SEEN":utc}
-                    collr.insert(ap)
-                    print "BSSID: " + bssid + " with SSID: " + ssid + " added to Rogue AP DB."
-            if apFound == 0:
-                ap = {"BSSID":bssid, "SSID":ssid, "CHANNEL":channel, "SEEN":utc}
-                collu.insert(ap)
-                print "BSSID: " + bssid + " with SSID: " + ssid + " added to Unkown AP DB."
-        else: #in case there's nothing in the db
-            print "There is nothing in the known database, please run RAPS with the install flag set."
-
-
-        for a in collk.find(): #loops over the collection and prints each document
-            print a
-        #print collk.find_one()
 
     # if args.install: #TODO: eventually make this a function triggered if the dir doesn't exist each run
     #     print 'Installing...'
