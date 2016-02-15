@@ -45,6 +45,10 @@ def main(argv):
     parser.add_argument('-t', '--temp', action='store_true', help='For temp testing only, remove in live code',)
     parser.add_argument('-s', '--snmp', action='store_true', help='For SNMP-only testing before integration into --auto')
     parser.add_argument('-i', '--interface', help='Interface to scan on')
+    parser.add_argument('-si', '--switchip', help='IP Address of core switch(es) or file containing IP addresses')
+    parser.add_argument('-sc', '--snmpCommunity', help='SNMP Community of switches to be polled')
+    parser.add_argument('-sp', '--snmpPort', help='Port that SNMP operates on')
+
     #TODO: Remove -i for install, install by default and have -i for interface
     #TODO: add arg for db location (or have a default location of /opt/raps)
     args = parser.parse_args()
@@ -183,7 +187,7 @@ def main(argv):
         call(['airmon-ng', 'stop', 'mon0'])
 
     if args.snmp:
-        snmpAsk(args.switchIP) #TODO: make this flag a thing
+        snmpAsk(args.switchIP, args.snmpCommunity, args.snmpPort)
 
 def readdump(): #TODO: actually start this...
     global ipath
@@ -197,8 +201,9 @@ def readdump(): #TODO: actually start this...
         #add a check here for thread.stopped
         #so that the thread can terminate
 
-def snmpAsk(sIP): #TODO: actually start this...
-    
+def snmpAsk(sIP, sComm, SPort):
+    oid = '1.3.6.1.2.1.17.4.3.1.1' #gets all unicast address on the LAN
+
 
 if __name__ == "__main__":
     main(sys.argv)
