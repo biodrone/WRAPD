@@ -166,6 +166,8 @@ def main(argv):
                 print "BSSID: " + bssid + " with SSID: " + ssid + " added to Unkown AP DB."
         else: #in case there's nothing in the db
             print "There is nothing in the known database, please run RAPS with the install flag set."
+            sys.exit()
+
 
         print "collk has %s records." % collk.count()
         print "collu has %s records." % collu.count()
