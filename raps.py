@@ -31,6 +31,7 @@ from subprocess import Popen, PIPE, call
 from signal import SIGINT, SIGTERM
 import pymongo
 import datetime
+from snmp_helper import snmp_get_oid, snmp_extract
 
 ipath = "/opt/raps"
 
@@ -182,7 +183,7 @@ def main(argv):
         call(['airmon-ng', 'stop', 'mon0'])
 
     if args.snmp:
-        
+        snmpAsk(args.switchIP) #TODO: make this flag a thing
 
 def readdump(): #TODO: actually start this...
     global ipath
@@ -196,9 +197,8 @@ def readdump(): #TODO: actually start this...
         #add a check here for thread.stopped
         #so that the thread can terminate
 
-def snmpAsk(): #TODO: actually start this...
-    sIP = '192.168.1.3' #TODO: figure out if this needs to be
-
+def snmpAsk(sIP): #TODO: actually start this...
+    
 
 if __name__ == "__main__":
     main(sys.argv)
