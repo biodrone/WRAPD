@@ -42,6 +42,7 @@ def main(argv):
     parser.add_argument('-a', '--auto', action='store_true', help='Run in auto mode (assumes --fightback)',)
     parser.add_argument('-f', '--fightback', action='store_true', help='Fights back against Rogue AP with Reaver and Honey Pot')
     parser.add_argument('-t', '--temp', action='store_true', help='For temp testing only, remove in live code',)
+    parser.add_argument('-s', '--snmp', action='store_true', help='For SNMP-only testing before integration into --auto')
     parser.add_argument('-i', '--interface', help='Interface to scan on')
     #TODO: Remove -i for install, install by default and have -i for interface
     #TODO: add arg for db location (or have a default location of /opt/raps)
@@ -179,6 +180,9 @@ def main(argv):
         time.sleep(10)
         os.kill(p.pid, SIGTERM)
         call(['airmon-ng', 'stop', 'mon0'])
+
+    if args.snmp:
+        
 
 def readdump(): #TODO: actually start this...
     global ipath
