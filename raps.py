@@ -160,6 +160,7 @@ def main(argv):
                     ap = {"BSSID":bssid, "SSID":ssid, "CHANNEL":channel, "SEEN":utc}
                     collr.insert(ap)
                     print "BSSID: " + bssid + " with SSID: " + ssid + " added to Rogue AP DB."
+                    snmpAsk(args.switchIP, args.snmpCommunity, args.snmpPort) #find out if the rogue is on the LAN
             if apFound == 0:
                 ap = {"BSSID":bssid, "SSID":ssid, "CHANNEL":channel, "SEEN":utc}
                 collu.insert(ap)
