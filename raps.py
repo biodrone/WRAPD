@@ -44,9 +44,9 @@ def main(argv):
     parser.add_argument('-f', '--fightback', action='store_true', help='Fights back against Rogue AP with Reaver and Honey Pot')
     parser.add_argument('-s', '--snmp', action='store_true', help='For SNMP-only testing before integration into --auto')
     parser.add_argument('-i', '--interface', help='Interface to scan on')
-    parser.add_argument('-si', '--switchIP', help='IP Address of core switch(es) or file containing IP addresses')
-    parser.add_argument('-sc', '--snmpCommunity', help='SNMP Community of switches to be polled')
-    parser.add_argument('-sp', '--snmpPort', help='Port that SNMP operates on')
+    # parser.add_argument('-si', '--switchIP', help='IP Address of core switch(es) or file containing IP addresses')
+    # parser.add_argument('-sc', '--snmpCommunity', help='SNMP Community of switches to be polled')
+    # parser.add_argument('-sp', '--snmpPort', help='Port that SNMP operates on')
 
     #TODO: add arg for db location (or have a default location of /opt/raps)
     #TODO: have a flag to init the mongodb with a file or a list of MACs
@@ -150,13 +150,20 @@ def readdump(): #TODO: actually start this...
         #so that the thread can terminate
 
 def snmpAsk(sIP, sComm, sPort):
-    oid = '.1.3.6.1.2.1.17.4.3.1.1' #gets all unicast address on the LAN (from Mib)
-    mArr = [] #array to hold MAC addresses from the MIB
-    device = (sIP, sComm, sPort)
-    data = snmp_get_oid(device, oid=oid, display_errors=False)
-    output = snmp_extract(data)
-    print output #output should be raw output of MIB
-    print type(output) #need to find out how to process this i. e. can i use for loop or no?
-
+    # print type(sIP)
+    # print type(sComm)
+    # print type(sPort)
+    oid = '1.3.6.1.2.1.17.4.3.1.1' #gets all unicast address on the LAN (from Mib)
+    # mArr = [] #array to hold MAC addresses from the MIB
+    # device = (sIP, sComm, sPort)
+    # data = snmp_get_oid(device, oid=oid, display_errors=False)
+    # #snmp_data = snmp_get_oid(device, oid='.1.3.6.1.2.1.1.1.0', display_errors=True)
+    # output = snmp_extract(data)
+    # #output2 = snmp_extract(snmp_data)
+    # print data
+    # print output #output should be raw output of MIB
+    # #print type(output) #need to find out how to process this i. e. can i use for loop or no?
+    #command = 'snmpwalk -v 2c -c %s %s' % (sComm, sIP)
+    call(['snmpwalk', '-v2c', '-cpublic', '192.168.1.3', oid])
 if __name__ == "__main__":
     main(sys.argv)
