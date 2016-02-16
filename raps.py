@@ -164,6 +164,8 @@ def snmpAsk(sIP, sComm, sPort):
     # print output #output should be raw output of MIB
     # #print type(output) #need to find out how to process this i. e. can i use for loop or no?
     #command = 'snmpwalk -v 2c -c %s %s' % (sComm, sIP)
-    call(['snmpwalk', '-v2c', '-cpublic', '192.168.1.3', oid])
+    call(['snmpwalk', '-v2c', '-cpublic', '192.168.1.3', oid, '|', 'cat', '/opt/lel.txt'])
+
+
 if __name__ == "__main__":
     main(sys.argv)
