@@ -31,7 +31,6 @@ from subprocess import Popen, PIPE, call
 from signal import SIGINT, SIGTERM
 import pymongo
 import datetime
-from snmp_helper import snmp_get_oid, snmp_extract
 
 ipath = "/opt/raps"
 
@@ -135,7 +134,7 @@ def main(argv):
         call(['airmon-ng', 'stop', 'mon0']) #make more intelligent for different OSes?
 
     if args.snmp:
-        snmpAsk(args.switchIP, args.snmpCommunity, args.snmpPort)
+        snmpAsk()
 
 def readdump(): #TODO: actually start this...
     global ipath
@@ -149,12 +148,9 @@ def readdump(): #TODO: actually start this...
         #add a check here for thread.stopped
         #so that the thread can terminate
 
-def snmpAsk(sIP, sComm, sPort):
-    # print type(sIP)
-    # print type(sComm)
-    # print type(sPort)
+def snmpAsk():
     oid = '1.3.6.1.2.1.17.4.3.1.1' #gets all unicast address on the LAN (from Mib)
-    # mArr = [] #array to hold MAC addresses from the MIB
+    mArr = [] #array to hold MAC addresses from the MIB
     # device = (sIP, sComm, sPort)
     # data = snmp_get_oid(device, oid=oid, display_errors=False)
     # #snmp_data = snmp_get_oid(device, oid='.1.3.6.1.2.1.1.1.0', display_errors=True)
@@ -164,8 +160,8 @@ def snmpAsk(sIP, sComm, sPort):
     # print output #output should be raw output of MIB
     # #print type(output) #need to find out how to process this i. e. can i use for loop or no?
     #command = 'snmpwalk -v 2c -c %s %s' % (sComm, sIP)
-    call(['snmpwalk', '-v2c', '-cpublic', '192.168.1.3', oid, '|', 'cat', '/opt/lel.txt'])
-
+    fo = open("/opt/lel.txt", 'wb')
+    Popen('snmpwalk -v 2c -c public 192.168.1.3 1.3.6.1.2.1.17.4.3.1.1', stdin=PIPE, stdout=fo, stderr=PIPE, shell=True)
 
 if __name__ == "__main__":
     main(sys.argv)
