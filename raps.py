@@ -149,19 +149,15 @@ def readdump(): #TODO: actually start this...
         #so that the thread can terminate
 
 def snmpAsk():
-    oid = '1.3.6.1.2.1.17.4.3.1.1' #gets all unicast address on the LAN (from Mib)
     mArr = [] #array to hold MAC addresses from the MIB
-    # device = (sIP, sComm, sPort)
-    # data = snmp_get_oid(device, oid=oid, display_errors=False)
-    # #snmp_data = snmp_get_oid(device, oid='.1.3.6.1.2.1.1.1.0', display_errors=True)
-    # output = snmp_extract(data)
-    # #output2 = snmp_extract(snmp_data)
-    # print data
-    # print output #output should be raw output of MIB
-    # #print type(output) #need to find out how to process this i. e. can i use for loop or no?
-    #command = 'snmpwalk -v 2c -c %s %s' % (sComm, sIP)
-    fo = open("/opt/lel.txt", 'wb')
-    Popen('snmpwalk -v 2c -c public 192.168.1.3 1.3.6.1.2.1.17.4.3.1.1', stdin=PIPE, stdout=fo, stderr=PIPE, shell=True)
-
+    f1 = open("/opt/lel.txt", 'w')
+    Popen('snmpwalk -v 2c -c public 192.168.1.3 1.3.6.1.2.1.17.4.3.1.1', stdin=PIPE, stdout=f1, stderr=PIPE, shell=True)
+    time.sleep(5)
+    f1.close()
+    f2 = open("/opt/lel.txt", 'r')
+    for line in f2:
+        line = line.split(': ')
+        line = line[1]
+        mArr.append(line[0:17])
 if __name__ == "__main__":
     main(sys.argv)
