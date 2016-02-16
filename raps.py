@@ -44,7 +44,7 @@ def main(argv):
     parser.add_argument('-f', '--fightback', action='store_true', help='Fights back against Rogue AP with Reaver and Honey Pot')
     parser.add_argument('-s', '--snmp', action='store_true', help='For SNMP-only testing before integration into --auto')
     parser.add_argument('-i', '--interface', help='Interface to scan on')
-    parser.add_argument('-si', '--switchip', help='IP Address of core switch(es) or file containing IP addresses')
+    parser.add_argument('-si', '--switchIP', help='IP Address of core switch(es) or file containing IP addresses')
     parser.add_argument('-sc', '--snmpCommunity', help='SNMP Community of switches to be polled')
     parser.add_argument('-sp', '--snmpPort', help='Port that SNMP operates on')
 
@@ -132,7 +132,7 @@ def main(argv):
         p = Popen([aircom], stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
         time.sleep(10)
         os.kill(p.pid, SIGTERM)
-        call(['airmon-ng', 'stop', 'mon0'])
+        call(['airmon-ng', 'stop', 'mon0']) #make more intelligent for different OSes?
 
     if args.snmp:
         snmpAsk(args.switchIP, args.snmpCommunity, args.snmpPort)
@@ -150,7 +150,8 @@ def readdump(): #TODO: actually start this...
         #so that the thread can terminate
 
 def snmpAsk(sIP, sComm, sPort):
-    oid = '1.3.6.1.2.1.17.4.3.1.1' #gets all unicast address on the LAN (from Mib)
+    oid = '.1.3.6.1.2.1.17.4.3.1.1' #gets all unicast address on the LAN (from Mib)
+    mArr = [] #array to hold MAC addresses from the MIB
     device = (sIP, sComm, sPort)
     data = snmp_get_oid(device, oid=oid, display_errors=False)
     output = snmp_extract(data)
