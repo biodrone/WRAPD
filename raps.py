@@ -116,13 +116,12 @@ def main(argv):
             sys.exit()
 
 
-        print "collk has %s records." % collk.count()
-        print "collu has %s records." % collu.count()
-        print "collr has %s records." % collr.count()
+        # print "collk has %s records." % collk.count()
+        # print "collu has %s records." % collu.count()
+        # print "collr has %s records." % collr.count()
         for a in collk.find(): #loops over the collection and prints each document
             print a
         #print collk.find_one()
-        #######################
 
         scanint = args.interface #eventually make this a cmd flag
         aircom = "airodump-ng --output-format csv --write %s/rapsdump %s" % (ipath, scanint + 'mon')
