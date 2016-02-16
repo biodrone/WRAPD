@@ -153,7 +153,10 @@ def readdump(): #TODO: actually start this...
 def snmpAsk(sIP, sComm, sPort):
     oid = '1.3.6.1.2.1.17.4.3.1.1' #gets all unicast address on the LAN (from Mib)
     device = (sIP, sComm, sPort)
-    snmp_get_oid(device, oid, display_errors=False)
+    data = snmp_get_oid(device, oid=oid, display_errors=False)
+    output = snmp_extract(data)
+    print output #output should be raw output of MIB
+    print type(output) #need to find out how to process this i. e. can i use for loop or no?
 
 if __name__ == "__main__":
     main(sys.argv)
