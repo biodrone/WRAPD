@@ -150,11 +150,11 @@ def readdump(): #TODO: actually start this...
 
 def snmpAsk():
     mArr = [] #array to hold MAC addresses from the MIB
-    f1 = open("/opt/lel.txt", 'w')
+    f1 = open("/opt/raps/mib.txt", 'w')
     Popen('snmpwalk -v 2c -c public 192.168.1.3 1.3.6.1.2.1.17.4.3.1.1', stdin=PIPE, stdout=f1, stderr=PIPE, shell=True)
     time.sleep(5)
     f1.close()
-    f2 = open("/opt/lel.txt", 'r')
+    f2 = open("/opt/raps/mib.txt", 'r')
     for line in f2:
         line = line.split(': ')
         line = line[1]
