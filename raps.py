@@ -32,7 +32,7 @@ from signal import SIGINT, SIGTERM
 import pymongo
 import datetime
 
-ipath = "/opt/raps"
+ipath = "/opt/raps/"
 
 def main(argv):
     global ipath
