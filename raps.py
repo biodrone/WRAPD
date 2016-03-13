@@ -114,14 +114,6 @@ def main(argv):
             print "There is nothing in the known database, please run RAPS with the install flag set."
             sys.exit()
 
-
-        # print "collk has %s records." % collk.count()
-        # print "collu has %s records." % collu.count()
-        # print "collr has %s records." % collr.count()
-        for a in collk.find(): #loops over the collection and prints each document
-            print a
-        #print collk.find_one()
-
         scanint = args.interface #eventually make this a cmd flag
         aircom = "airodump-ng --output-format csv --write %s/rapsdump %s" % (ipath, scanint + 'mon')
         fo = open("/proc/net/dev", 'rb')
@@ -159,5 +151,14 @@ def snmpAsk():
         line = line.split(': ')
         line = line[1]
         mArr.append(line[0:17])
+
+def mongoTests():
+    print "collk has %s records." % collk.count()
+    print "collu has %s records." % collu.count()
+    print "collr has %s records." % collr.count()
+    for a in collk.find(): #loops over the collection and prints each document
+        print a
+    print collk.find_one()
+
 if __name__ == "__main__":
     main(sys.argv)
