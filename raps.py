@@ -67,8 +67,7 @@ def main(argv):
         collk = db.known_aps
         collu = db.unknown_aps
         collr = db.rogue_aps
-        #collk.remove({}) #remove all documents from collection
-        #collu.remove({})
+
         utc = datetime.datetime.utcnow()
         ssid = "kawaii-fi"
         bssid = "DE:AD:BE:EF:CO:FF"
@@ -164,6 +163,8 @@ def mongoTests():
     for a in collk.find(): #loops over the collection and prints each document
         print a
     print collk.find_one()
+    #collk.remove({}) #remove all documents from collection
+    #collu.remove({})
 
 if __name__ == "__main__":
     main(sys.argv)
