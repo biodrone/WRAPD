@@ -69,6 +69,7 @@ def main(argv):
         collr = db.rogue_aps
 
         macs, ssids = readDump()
+        mongoTests(db, collk, collu, collr)
 
         utc = datetime.datetime.utcnow()
         ssid = "kawaii-fi"
@@ -157,16 +158,22 @@ def snmpRead():
         mArr.append(line[0:17])
     f2.close()
 
-
-def mongoTests():
+def mongoTests(db, collk, collu, collr):
     print "collk has %s records." % collk.count()
-    print "collu has %s records." % collu.count()
-    print "collr has %s records." % collr.count()
     for a in collk.find(): #loops over the collection and prints each document
         print a
     print collk.find_one()
+    print "collu has %s records." % collu.count()
+    for a in collu.find(): #loops over the collection and prints each document
+        print a
+    print collu.find_one()
+    print "collr has %s records." % collr.count()
+    for a in collr.find(): #loops over the collection and prints each document
+        print a
+    print collr.find_one()
     #collk.remove({}) #remove all documents from collection
     #collu.remove({})
+    #collr.remove({})
 
 if __name__ == "__main__":
     main(sys.argv)
