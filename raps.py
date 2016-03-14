@@ -62,7 +62,7 @@ def main(argv):
             sys.exit()
 
         #TODO: do some logic here to determine if a db exists already
-        #TODO: make this into it's own function
+        #define mongo DBs
         db = conn.aps
         collk = db.known_aps
         collu = db.unknown_aps
@@ -130,12 +130,12 @@ def doTheMongo(db, collk, collu, collr):
                 apFound = 1 #have this become a breakout from the loop eventually
             else: #if BSSID doesn't match
                 apFound = 1
-                ap = {"BSSID":bssid, "SSID":ssid, "CHANNEL":channel, "SEEN":utc}
+                ap = {"BSSID":bssid, "SSID":ssid}
                 collr.insert(ap)
                 print "BSSID: " + bssid + " with SSID: " + ssid + " added to Rogue AP DB."
                 snmpAsk() #find out if the rogue is on the LAN
         if apFound == 0:
-            ap = {"BSSID":bssid, "SSID":ssid, "CHANNEL":channel, "SEEN":utc}
+            ap = {"BSSID":bssid, "SSID":ssid}
             collu.insert(ap)
             print "BSSID: " + bssid + " with SSID: " + ssid + " added to Unkown AP DB."
     else: #in case there's nothing in the db
