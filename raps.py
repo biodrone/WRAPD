@@ -151,10 +151,11 @@ def readDump():
     fpath = "%s/rapsdump-01.csv" % ipath
 
     with open(fpath, 'rb') as f1:
-        r = csv.reader(f1)
+        r = csv.reader(f1, delimiter='\n')
         l1 = list(r)
 
-    print l1
+    for x in l1:
+		print x
 
 def snmpAsk():
     mArr = [] #array to hold MAC addresses from the MIB

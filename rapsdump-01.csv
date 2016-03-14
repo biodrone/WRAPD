@@ -1,0 +1,14 @@
+
+BSSID, First time seen, Last time seen, channel, Speed, Privacy, Cipher, Authentication, Power, # beacons, # IV, LAN IP, ID-length, ESSID, Key
+F0:92:1C:1E:90:67, 2016-03-14 02:34:54, 2016-03-14 02:34:59,  1,  54, WPA2, CCMP,PSK, -75,       51,        0,   0.  0.  0.  0,  27, HP-Print-67-Photosmart 6520, 
+7C:4C:A5:10:DE:69, 2016-03-14 02:34:54, 2016-03-14 02:34:59,  1,  54, WPA2, CCMP,PSK, -75,       52,        0,   0.  0.  0.  0,   8, SKYCFD6E, 
+00:AC:54:E2:0A:12, 2016-03-14 02:34:54, 2016-03-14 02:35:00,  1,  54, WPA2WPA , CCMP TKIP,PSK, -73,       35,        0,   0.  0.  0.  0,  11, BTHub3-NP3F, 
+12:AC:54:E2:0A:12, 2016-03-14 02:34:54, 2016-03-14 02:34:59,  1,  54, OPN ,       ,   , -75,       30,        0,   0.  0.  0.  0,  15, BTWiFi-with-FON, 
+02:AC:54:E2:0A:12, 2016-03-14 02:34:54, 2016-03-14 02:34:59,  1,  54, OPN ,       ,   , -74,       33,        0,   0.  0.  0.  0,   6, BTWiFi, 
+64:70:02:39:07:DD, 2016-03-14 02:34:54, 2016-03-14 02:34:59,  1,  54, WPA2, CCMP TKIP,PSK, -32,       57,       24,   0.  0.  0.  0,   9, Downunder, 
+
+Station MAC, First time seen, Last time seen, Power, # packets, BSSID, Probed ESSIDs
+AC:BC:32:85:D8:19, 2016-03-14 02:34:54, 2016-03-14 02:34:59, -22,       10, 64:70:02:39:07:DD,
+B8:27:EB:01:7B:6A, 2016-03-14 02:34:54, 2016-03-14 02:34:54, -22,        1, 64:70:02:39:07:DD,
+6C:AD:F8:92:D1:27, 2016-03-14 02:34:56, 2016-03-14 02:34:59, -18,       27, 64:70:02:39:07:DD, Downunder
+
