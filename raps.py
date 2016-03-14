@@ -129,7 +129,7 @@ def scanner(scanint):
     Popen('ifconfig', stdin=PIPE, stdout=tmp, stderr=PIPE, shell=True)
     tmp.close() #maybe try doing this in the same file...?
     tmp1 = open("/opt/raps/tmp.txt", 'r')
-    if tmp1.read().find("mon0") == -1
+    if tmp1.read().find("mon") == -1:
         call(['airmon-ng', 'start', scanint]) #add logic to determine which interface to put in mon
         time.sleep(10)
     tmp1.close()
