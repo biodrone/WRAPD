@@ -121,7 +121,7 @@ def readDump():
         if str.find(str(x), ":") != -1: #only get macs in final list
             macs.append(str.strip(str.split(str(x), ',')[0], "[ '")) #split to only get MAC and then remove first 2 chars ([')
             ssids.append(str.strip(str.split(str(x), ',')[13])) #split to only get MAC and then remove whitespace
-        return macs, ssids
+    return macs, ssids
 
 def doTheMongo(db, collk, collu, collr):
     apFound = 0
