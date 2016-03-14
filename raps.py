@@ -163,7 +163,7 @@ def readDump():
             break
         if str.find(str(x), ":") != -1: #only get macs in final list
             macs.append(str.strip(str.split(str(x), ',')[0], "[ '")) #split to only get MAC and then remove first 2 chars ([')
-            ssids.append(str.strip(str.split(str(x), ',')[13], "[ '")) #split to only get MAC and then remove first 2 chars ([')
+            ssids.append(str.strip(str.split(str(x), ',')[13])) #split to only get MAC and then remove whitespace
         z = z + 1
     for y in macs:
         print y
