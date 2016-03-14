@@ -68,6 +68,10 @@ def main(argv):
         collu = db.unknown_aps
         collr = db.rogue_aps
 
+        macs, ssids = readDump()
+        print macs
+        print ssids
+
         utc = datetime.datetime.utcnow()
         ssid = "kawaii-fi"
         bssid = "DE:AD:BE:EF:CO:FF"
@@ -117,28 +121,29 @@ def readDump():
         if str.find(str(x), ":") != -1: #only get macs in final list
             macs.append(str.strip(str.split(str(x), ',')[0], "[ '")) #split to only get MAC and then remove first 2 chars ([')
             ssids.append(str.strip(str.split(str(x), ',')[13])) #split to only get MAC and then remove whitespace
+        return macs, ssids
 
-    def doTheMongo(db, collk, collu, collr):
-        apFound = 0
+def doTheMongo(db, collk, collu, collr):
+    apFound = 0
 
-        if collk.count({'SSID':ssid}) > 0: #check if there's actually any APs in the db
-            for a in collk.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, '_id':0}): #check for matches with SSID
-                if str(a[u'BSSID']) == bssid: #check for matches with BSSID
-                    print "Expected AP %s as all elements match." % str(a[u'SSID'])
-                    apFound = 1 #have this become a breakout from the loop eventually
-                else: #if BSSID doesn't match
-                    apFound = 1
-                    ap = {"BSSID":bssid, "SSID":ssid, "CHANNEL":channel, "SEEN":utc}
-                    collr.insert(ap)
-                    print "BSSID: " + bssid + " with SSID: " + ssid + " added to Rogue AP DB."
-                    snmpAsk() #find out if the rogue is on the LAN
-            if apFound == 0:
+    if collk.count({'SSID':ssid}) > 0: #check if there's actually any APs in the db
+        for a in collk.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, '_id':0}): #check for matches with SSID
+            if str(a[u'BSSID']) == bssid: #check for matches with BSSID
+                print "Expected AP %s as all elements match." % str(a[u'SSID'])
+                apFound = 1 #have this become a breakout from the loop eventually
+            else: #if BSSID doesn't match
+                apFound = 1
                 ap = {"BSSID":bssid, "SSID":ssid, "CHANNEL":channel, "SEEN":utc}
-                collu.insert(ap)
-                print "BSSID: " + bssid + " with SSID: " + ssid + " added to Unkown AP DB."
-        else: #in case there's nothing in the db
-            print "There is nothing in the known database, please run RAPS with the install flag set."
-            sys.exit()
+                collr.insert(ap)
+                print "BSSID: " + bssid + " with SSID: " + ssid + " added to Rogue AP DB."
+                snmpAsk() #find out if the rogue is on the LAN
+        if apFound == 0:
+            ap = {"BSSID":bssid, "SSID":ssid, "CHANNEL":channel, "SEEN":utc}
+            collu.insert(ap)
+            print "BSSID: " + bssid + " with SSID: " + ssid + " added to Unkown AP DB."
+    else: #in case there's nothing in the db
+        print "There is nothing in the known database, please run RAPS with the install flag set."
+        sys.exit()
 
 def snmpAsk():
     mArr = [] #array to hold MAC addresses from the MIB
