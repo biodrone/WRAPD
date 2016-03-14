@@ -119,7 +119,7 @@ def main(argv):
         snmpAsk()
 
     if args.temp:
-        scanner()
+        scanner(args.interface)
         #readDump()
 
 def scanner(scanint):
