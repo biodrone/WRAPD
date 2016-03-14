@@ -147,7 +147,7 @@ def readDump():
     f = []
     macs = []
     ssids = []
-    z = 0
+    
     for (dirpath, dirnames, filenames) in walk(ipath):
         f.extend(filenames)
         break
