@@ -69,8 +69,6 @@ def main(argv):
         collr = db.rogue_aps
 
         macs, ssids = readDump()
-        print macs
-        print ssids
 
         utc = datetime.datetime.utcnow()
         ssid = "kawaii-fi"
@@ -78,7 +76,6 @@ def main(argv):
         channel = "1"
 
     if args.temp:
-        #scanner()
         readDump()
 
 def scanWifi(scanint):
