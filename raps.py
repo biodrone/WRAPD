@@ -32,6 +32,7 @@ from subprocess import Popen, PIPE, call
 from signal import SIGINT, SIGTERM
 import pymongo
 import datetime
+import csv
 
 ipath = "/opt/raps"
 
@@ -119,8 +120,8 @@ def main(argv):
         snmpAsk()
 
     if args.temp:
-        scanner(args.interface)
-        #readDump()
+        #scanner()
+        readDump()
 
 def scanner(scanint):
     global ipath
@@ -149,10 +150,11 @@ def readDump():
     print f
     fpath = "%s/rapsdump-01.csv" % ipath
 
-    of = open(fpath, 'rb')
-    print of.read()
-    of.close()
-    time.sleep(2) #wait for 2 seconds because reasons
+    with open(fpath, 'rb') as f1:
+        r = csv.reader(f1)
+        l1 = list(r)
+
+    print l1
 
 def snmpAsk():
     mArr = [] #array to hold MAC addresses from the MIB
