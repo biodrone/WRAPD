@@ -122,12 +122,13 @@ def main(argv):
         scanner()
         #readDump()
 
-def scanner():
-    monint = args.interface + 'mon'
+def scanner(scanint):
+    global ipath
+    monint = scanint + 'mon'
     aircom = "airodump-ng --output-format csv --write %s/rapsdump %s" % (ipath, monint)
     fo = open("/proc/net/dev", 'rb')
     if fo.read().find("mon0") == -1:
-        call(['airmon-ng', 'start', args.interface]) #add logic to determine which interface to put in mon
+        call(['airmon-ng', 'start', scanint]) #add logic to determine which interface to put in mon
         time.sleep(10)
     p = Popen([aircom], stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
     time.sleep(10)
