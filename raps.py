@@ -39,7 +39,7 @@ def main(argv):
     global ipath
 
     parser = argparse.ArgumentParser(usage='Find rogue Access Points within scanning range')
-    parser.add_argument('-t', '--install', action='store_true', help='Real basic temp stuffs')
+    parser.add_argument('-t', '--temp', action='store_true', help='Real basic temp stuffs')
     parser.add_argument('-a', '--auto', action='store_true', help='Run in auto mode (assumes --fightback)',)
     parser.add_argument('-f', '--fightback', action='store_true', help='Fights back against Rogue AP with Reaver and Honey Pot')
     parser.add_argument('-s', '--snmp', action='store_true', help='For SNMP-only testing before integration into --auto')
