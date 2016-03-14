@@ -126,7 +126,7 @@ def scanner(scanint):
     global ipath
 
     tmp0 = open("/opt/raps/tmp.txt", 'w')
-    Popen('ifconfig', stdin=PIPE, stdout=tmp, stderr=PIPE, shell=True)
+    Popen('ifconfig', stdin=PIPE, stdout=tmp0, stderr=PIPE, shell=True)
     tmp.close() #maybe try doing this in the same file...?
     tmp1 = open("/opt/raps/tmp.txt", 'r')
     if tmp1.read().find("mon") == -1:
