@@ -124,12 +124,17 @@ def main(argv):
 
 def scanner(scanint):
     global ipath
-    monint = scanint + 'mon'
-    aircom = "airodump-ng --output-format csv --write %s/rapsdump %s" % (ipath, monint)
-    fo = open("/proc/net/dev", 'rb')
-    if fo.read().find("mon0") == -1:
+
+    tmp0 = open("/opt/raps/tmp.txt", 'w')
+    Popen('ifconfig', stdin=PIPE, stdout=tmp, stderr=PIPE, shell=True)
+    tmp.close() #maybe try doing this in the same file...?
+    tmp1 = open("/opt/raps/tmp.txt", 'r')
+    if tmp1.read().find("mon0") == -1
         call(['airmon-ng', 'start', scanint]) #add logic to determine which interface to put in mon
         time.sleep(10)
+    tmp1.close()
+    monint = 'mon0'
+    aircom = "airodump-ng --output-format csv --write %s/rapsdump %s" % (ipath, monint)
     p = Popen([aircom], stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
     time.sleep(10)
     os.kill(p.pid, SIGTERM)
