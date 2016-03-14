@@ -84,6 +84,7 @@ def main(argv):
             sys.exit()
 
         #TODO: do some logic here to determine if a db exists already
+        #TODO: make this into it's own function
         db = conn.aps
         collk = db.known_aps
         collu = db.unknown_aps
@@ -123,7 +124,7 @@ def main(argv):
         #scanner()
         readDump()
 
-def scanner(scanint):
+def scanWifi(scanint):
     global ipath
 
     tmp0 = open("/opt/raps/tmp.txt", 'w')
@@ -145,6 +146,7 @@ def readDump():
     global ipath
     f = []
     macs = []
+    ssid = []
     z = 0
     for (dirpath, dirnames, filenames) in walk(ipath):
         f.extend(filenames)
@@ -161,6 +163,7 @@ def readDump():
             break
         if str.find(str(x), ":") != -1: #only get macs in final list
             macs.append(str.strip(str.split(str(x), ',')[0], "[ '")) #split to only get MAC and then remove first 2 chars ([')
+            ssids.append()
         z = z + 1
     for y in macs:
         print y
@@ -179,6 +182,7 @@ def snmpRead():
         line = line[1]
         mArr.append(line[0:17])
     f2.close()
+
 
 def mongoTests():
     print "collk has %s records." % collk.count()
