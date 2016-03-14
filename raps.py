@@ -146,7 +146,7 @@ def readDump():
     global ipath
     f = []
     macs = []
-    ssid = []
+    ssids = []
     z = 0
     for (dirpath, dirnames, filenames) in walk(ipath):
         f.extend(filenames)
@@ -163,9 +163,11 @@ def readDump():
             break
         if str.find(str(x), ":") != -1: #only get macs in final list
             macs.append(str.strip(str.split(str(x), ',')[0], "[ '")) #split to only get MAC and then remove first 2 chars ([')
-            ssids.append()
+            ssids.append(str.strip(str.split(str(x), ',')[13], "[ '")) #split to only get MAC and then remove first 2 chars ([')
         z = z + 1
     for y in macs:
+        print y
+    for y in ssids:
         print y
 
 def snmpAsk():
