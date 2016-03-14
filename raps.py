@@ -21,6 +21,7 @@ General TODO:
 """
 
 import os
+from os import walk
 import subprocess
 import threading
 import sys
@@ -38,7 +39,7 @@ def main(argv):
     global ipath
 
     parser = argparse.ArgumentParser(usage='Find rogue Access Points within scanning range')
-    #parser.add_argument('-i', '--install', action='store_true', help='Install RAPS')
+    parser.add_argument('-t', '--install', action='store_true', help='Real basic temp stuffs')
     parser.add_argument('-a', '--auto', action='store_true', help='Run in auto mode (assumes --fightback)',)
     parser.add_argument('-f', '--fightback', action='store_true', help='Fights back against Rogue AP with Reaver and Honey Pot')
     parser.add_argument('-s', '--snmp', action='store_true', help='For SNMP-only testing before integration into --auto')
@@ -117,6 +118,9 @@ def main(argv):
     if args.snmp:
         snmpAsk()
 
+    if args.temp:
+        readDump()
+
 def scanner():
     monint = args.interface + 'mon'
     aircom = "airodump-ng --output-format csv --write %s/rapsdump %s" % (ipath, monint)
@@ -129,17 +133,19 @@ def scanner():
     os.kill(p.pid, SIGTERM)
     call(['airmon-ng', 'stop', monint]) #make more intelligent for different OSes?
 
-def readDump(): #TODO: actually start this...
+def readDump():
     global ipath
+    f = []
+    for (dirpath, dirnames, filenames) in walk(ipath):
+        f.extend(filenames)
+        break
+    print f
     fpath = "%s/rapsdump-01.csv" % ipath
 
-    while True: #maybe add thread.stopped check here
-        of = open(ipath, 'rb')
-        print of.read()
-        of.close()
-        time.sleep(2) #wait for 2 seconds because reasons
-        #add a check here for thread.stopped
-        #so that the thread can terminate
+    of = open(fpath, 'rb')
+    print of.read()
+    of.close()
+    time.sleep(2) #wait for 2 seconds because reasons
 
 def snmpAsk():
     mArr = [] #array to hold MAC addresses from the MIB
