@@ -114,21 +114,22 @@ def main(argv):
             print "There is nothing in the known database, please run RAPS with the install flag set."
             sys.exit()
 
-        monint = args.interface + 'mon'
-        aircom = "airodump-ng --output-format csv --write %s/rapsdump %s" % (ipath, monint)
-        fo = open("/proc/net/dev", 'rb')
-        if fo.read().find("mon0") == -1:
-            call(['airmon-ng', 'start', args.interface]) #add logic to determine which interface to put in mon
-            time.sleep(10)
-        p = Popen([aircom], stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
-        time.sleep(10)
-        os.kill(p.pid, SIGTERM)
-        call(['airmon-ng', 'stop', monint]) #make more intelligent for different OSes?
-
     if args.snmp:
         snmpAsk()
 
-def readdump(): #TODO: actually start this...
+def scanner():
+    monint = args.interface + 'mon'
+    aircom = "airodump-ng --output-format csv --write %s/rapsdump %s" % (ipath, monint)
+    fo = open("/proc/net/dev", 'rb')
+    if fo.read().find("mon0") == -1:
+        call(['airmon-ng', 'start', args.interface]) #add logic to determine which interface to put in mon
+        time.sleep(10)
+    p = Popen([aircom], stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
+    time.sleep(10)
+    os.kill(p.pid, SIGTERM)
+    call(['airmon-ng', 'stop', monint]) #make more intelligent for different OSes?
+
+def readDump(): #TODO: actually start this...
     global ipath
     fpath = "%s/rapsdump-01.csv" % ipath
 
@@ -146,6 +147,8 @@ def snmpAsk():
     Popen('snmpwalk -v 2c -c fyp 192.168.1.4 1.3.6.1.2.1.17.4.3.1.1', stdin=PIPE, stdout=f1, stderr=PIPE, shell=True)
     time.sleep(5)
     f1.close() #maybe try doing this in the same file...?
+
+def snmpRead():
     f2 = open("/opt/raps/mib.txt", 'r')
     for line in f2:
         line = line.split(': ')
