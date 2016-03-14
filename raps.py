@@ -82,33 +82,38 @@ def main(argv):
 def scanWifi(scanint):
     global ipath
 
+    #put ifconfig stats into a temp file to find monitor interfaces
     tmp0 = open("/opt/raps/tmp.txt", 'w')
     Popen('ifconfig', stdin=PIPE, stdout=tmp0, stderr=PIPE, shell=True)
     tmp0.close() #maybe try doing this in the same file...?
+    #read the temp file to see if monitor mode int exists
     tmp1 = open("/opt/raps/tmp.txt", 'r')
     if tmp1.read().find("mon") == -1:
-        call(['airmon-ng', 'start', scanint]) #add logic to determine which interface to put in mon
+        call(['airmon-ng', 'start', scanint])
         time.sleep(10)
     tmp1.close()
-    monint = 'mon0'
+    monint = 'mon0' #TODO: Grab this from ifconfig file
     aircom = "airodump-ng --output-format csv --write %s/rapsdump %s" % (ipath, monint)
     p = Popen([aircom], stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
     time.sleep(10)
     os.kill(p.pid, SIGTERM)
-    call(['airmon-ng', 'stop', monint]) #make more intelligent for different OSes?
+    call(['airmon-ng', 'stop', monint]) #TODO: make more intelligent for different OSes?
 
-def readDump():
+def readDump(): #parse the wifi dump .csv for MACs and SSIDs
     global ipath
     f = []
     macs = []
     ssids = []
 
+    #TODO: use this to get the latest file
+    #get files in dir (for when there's multiple files)
     for (dirpath, dirnames, filenames) in walk(ipath):
         f.extend(filenames)
         break
     #print f
     fpath = "%s/rapsdump-01.csv" % ipath
 
+    #parse .csv into a list for detail grabbing
     with open(fpath, 'rb') as f1:
         r = csv.reader(f1, delimiter='\n')
         l1 = list(r)
@@ -118,27 +123,37 @@ def readDump():
             break
         if str.find(str(x), ":") != -1: #only get macs in final list
             macs.append(str.strip(str.split(str(x), ',')[0], "[ '")) #split to only get MAC and then remove first 2 chars ([')
-            ssids.append(str.strip(str.split(str(x), ',')[13])) #split to only get MAC and then remove whitespace
+            ssids.append(str.strip(str.split(str(x), ',')[13])) #split to only get SSID and then remove whitespace
+    #return the 2 lists
     return macs, ssids
 
 def doTheMongo(db, collk, collu, collr):
-    apFound = 0
+    """
+    Return codes:
+        0 - No match
+            Check SNMP match for Rogue AP
+        1 - SSID match, BSSID match
+            Check SNMP for Smart Evil Twin
+        2 - SSID match, BSSID no match
+            Check SNMP for Dumb Evil Twin or Smart Rogue AP
+    """
 
     if collk.count({'SSID':ssid}) > 0: #check if there's actually any APs in the db
         for a in collk.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, '_id':0}): #check for matches with SSID
             if str(a[u'BSSID']) == bssid: #check for matches with BSSID
-                print "Expected AP %s as all elements match." % str(a[u'SSID'])
-                apFound = 1 #have this become a breakout from the loop eventually
+                print "Expected AP %s, all elements match." % str(a[u'SSID'])
+                print "Check SNMP for Evil Twin Attack for safety."
+                return 1
             else: #if BSSID doesn't match
-                apFound = 1
                 ap = {"BSSID":bssid, "SSID":ssid}
                 collr.insert(ap)
                 print "BSSID: " + bssid + " with SSID: " + ssid + " added to Rogue AP DB."
-                snmpAsk() #find out if the rogue is on the LAN
-        if apFound == 0:
-            ap = {"BSSID":bssid, "SSID":ssid}
-            collu.insert(ap)
-            print "BSSID: " + bssid + " with SSID: " + ssid + " added to Unkown AP DB."
+                return 2 #BSSID not found
+        return 0
+        # if apFound == 0:
+        #     ap = {"BSSID":bssid, "SSID":ssid}
+        #     collu.insert(ap)
+        #     print "BSSID: " + bssid + " with SSID: " + ssid + " added to Unkown AP DB."
     else: #in case there's nothing in the db
         print "There is nothing in the known database, please run RAPS with the install flag set."
         sys.exit()
