@@ -144,10 +144,12 @@ def scanner(scanint):
 def readDump():
     global ipath
     f = []
+    macs = []
+    z = 0
     for (dirpath, dirnames, filenames) in walk(ipath):
         f.extend(filenames)
         break
-    print f
+    #print f
     fpath = "%s/rapsdump-01.csv" % ipath
 
     with open(fpath, 'rb') as f1:
@@ -155,7 +157,13 @@ def readDump():
         l1 = list(r)
 
     for x in l1:
-		print x
+        if str(x).find("Station MAC") != -1: #filter out station macs
+            break
+        if str.find(str(x), ":") != -1: #only get macs in final list
+            macs.append(str.strip(str.split(str(x), ',')[0], "[ '")) #split to only get MAC and then remove first 2 chars ([')
+        z = z + 1
+    for y in macs:
+        print y
 
 def snmpAsk():
     mArr = [] #array to hold MAC addresses from the MIB
