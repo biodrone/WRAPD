@@ -78,7 +78,7 @@ def main(argv):
             x = x + 1
 
     if args.temp:
-        findLanMac("64:70:02:39:07:DD")
+        print findLanMac("C4:E9:84:F8:28:73")
 
 def scanWifi(scanint):
     global ipath
@@ -139,6 +139,7 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
             Check SNMP for Dumb Evil Twin or Smart Rogue AP
     """
     #run the findLanMac func here
+    lanmac = findLanMac(bssid) #think about where this needs to be launched...
     if collk.count({'SSID':ssid}) > 0: #check if there's actually any APs in the db
         for a in collk.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, '_id':0}): #check for matches with SSID
             if str(a[u'BSSID']) == bssid: #check for matches with BSSID
@@ -156,23 +157,46 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
         sys.exit()
 
 def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
+    found = 0
     vendor = bssid[:8]
-    print vendor
+    matchMe = bssid[:-1]
+
+    while len(matchMe) > 8:
+        if matchMe[len(matchMe) - 1] == ":":
+            matchMe = matchMe[:-1]
+
+        #snmpAsk() #enable this in live environment
+        snmp = snmpRead()
+        for s in snmp:
+            s = s.replace(" ", ":")
+            if s.find(matchMe) != -1:
+                #print "LAN MAC found! %s" % s
+                found = found + 1
+        if found == 1:
+            return s
+            break
+        elif found > 1:
+            print "Multiple matching MACs found, do something else with this later!"
+            sys.exit()
+        matchMe = matchMe[:-1]
+        #do something like check the arp on the pi here just in case the bove fails
+        #/usr/sbin/arp -n | grep XX:XX:XX:XX:XX:XX | awk '{print $1}'H
 
 def snmpAsk():
-    mArr = [] #array to hold MAC addresses from the MIB
     f1 = open("/opt/raps/mib.txt", 'w')
     Popen('snmpwalk -v 2c -c fyp 192.168.1.4 1.3.6.1.2.1.17.4.3.1.1', stdin=PIPE, stdout=f1, stderr=PIPE, shell=True)
     time.sleep(5)
     f1.close() #maybe try doing this in the same file...?
 
 def snmpRead():
+    mArr = []
     f2 = open("/opt/raps/mib.txt", 'r')
     for line in f2:
         line = line.split(': ')
         line = line[1]
         mArr.append(line[0:17])
     f2.close()
+    return mArr
 
 def mongoTests(db, collk, collu, collr):
     print "collk has %s records." % collk.count()
