@@ -38,6 +38,7 @@ ipath = "/opt/raps"
 
 def main(argv):
     global ipath
+    x = 0
 
     parser = argparse.ArgumentParser(usage='Find rogue Access Points within scanning range')
     parser.add_argument('-t', '--temp', action='store_true', help='Real basic temp stuffs')
@@ -71,10 +72,8 @@ def main(argv):
         macs, ssids = readDump()
         mongoTests(db, collk, collu, collr)
 
-        utc = datetime.datetime.utcnow()
-        ssid = "kawaii-fi"
-        bssid = "DE:AD:BE:EF:CO:FF"
-        channel = "1"
+        for m in macs:
+            doTheMongo(db, collk, collu, collr, ssid[x], bssid[x])
 
     if args.temp:
         readDump()
@@ -127,7 +126,7 @@ def readDump(): #parse the wifi dump .csv for MACs and SSIDs
     #return the 2 lists
     return macs, ssids
 
-def doTheMongo(db, collk, collu, collr):
+def doTheMongo(db, collk, collu, collr, ssid, bssid):
     """
     Return codes:
         0 - No match
@@ -150,10 +149,6 @@ def doTheMongo(db, collk, collu, collr):
                 print "BSSID: " + bssid + " with SSID: " + ssid + " added to Rogue AP DB."
                 return 2 #BSSID not found
         return 0
-        # if apFound == 0:
-        #     ap = {"BSSID":bssid, "SSID":ssid}
-        #     collu.insert(ap)
-        #     print "BSSID: " + bssid + " with SSID: " + ssid + " added to Unkown AP DB."
     else: #in case there's nothing in the db
         print "There is nothing in the known database, please run RAPS with the install flag set."
         sys.exit()
