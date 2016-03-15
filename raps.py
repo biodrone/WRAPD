@@ -70,12 +70,12 @@ def main(argv):
         collr = db.rogue_aps
 
         #scanWifi(args.interface)
-
         macs, ssids = readDump()
         mongoTests(db, collk, collu, collr)
 
         for m in macs:
-            doTheMongo(db, collk, collu, collr, ssid[x], bssid[x])
+            doTheMongo(db, collk, collu, collr, ssids[x], macs[x])
+            x = x + 1
 
     if args.temp:
         readDump()
@@ -138,7 +138,7 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
         2 - SSID match, BSSID no match
             Check SNMP for Dumb Evil Twin or Smart Rogue AP
     """
-
+    #run the findLanMac func here
     if collk.count({'SSID':ssid}) > 0: #check if there's actually any APs in the db
         for a in collk.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, '_id':0}): #check for matches with SSID
             if str(a[u'BSSID']) == bssid: #check for matches with BSSID
@@ -146,7 +146,7 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
                 print "Check SNMP for Evil Twin Attack for safety."
                 return 1
             else: #if BSSID doesn't match
-                ap = {"BSSID":bssid, "SSID":ssid}
+                ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
                 collr.insert(ap)
                 print "BSSID: " + bssid + " with SSID: " + ssid + " added to Rogue AP DB."
                 return 2 #BSSID not found
@@ -154,6 +154,9 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
     else: #in case there's nothing in the db
         print "There is nothing in the known database, please run RAPS with the install flag set."
         sys.exit()
+
+def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
+    
 
 def snmpAsk():
     mArr = [] #array to hold MAC addresses from the MIB
