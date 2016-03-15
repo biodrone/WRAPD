@@ -69,6 +69,8 @@ def main(argv):
         collu = db.unknown_aps
         collr = db.rogue_aps
 
+        #scanWifi(args.interface)
+
         macs, ssids = readDump()
         mongoTests(db, collk, collu, collr)
 
