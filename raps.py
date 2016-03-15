@@ -179,8 +179,8 @@ def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
             print "Multiple matching MACs found, do something else with this later!"
             sys.exit()
         matchMe = matchMe[:-1]
-        #do something like check the arp on the pi here just in case the bove fails
-        #/usr/sbin/arp -n | grep XX:XX:XX:XX:XX:XX | awk '{print $1}'H
+        #do something like check the arp on the pi here just in case the above fails
+        #/usr/sbin/arp -n | grep XX:XX:XX:XX:XX:XX | awk '{print $1}'
 
 def snmpAsk():
     f1 = open("/opt/raps/mib.txt", 'w')
