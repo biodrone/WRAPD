@@ -78,7 +78,7 @@ def main(argv):
             x = x + 1
 
     if args.temp:
-        readDump()
+        findLanMac("64:70:02:39:07:DD")
 
 def scanWifi(scanint):
     global ipath
@@ -156,7 +156,8 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
         sys.exit()
 
 def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
-    
+    vendor = bssid[:8]
+    print vendor
 
 def snmpAsk():
     mArr = [] #array to hold MAC addresses from the MIB
