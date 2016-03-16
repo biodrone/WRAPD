@@ -165,7 +165,7 @@ def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
         if matchMe[len(matchMe) - 1] == ":":
             matchMe = matchMe[:-1]
 
-        #snmpAsk() #enable this in live environment
+        #snmpAsk() #enable this in live environment to run a fresh snmp capture
         snmp = snmpRead()
         for s in snmp:
             s = s.replace(" ", ":")
@@ -177,10 +177,18 @@ def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
             break
         elif found > 1:
             print "Multiple matching MACs found, do something else with this later!"
-            sys.exit()
+            sys.exit() #TODO: find something else to do with this
         matchMe = matchMe[:-1]
         #do something like check the arp on the pi here just in case the above fails
-        #/usr/sbin/arp -n | grep XX:XX:XX:XX:XX:XX | awk '{print $1}'
+        arp = ""
+        matchMe = bssid[:-1]
+        while matchMe < 8:
+            Popen("/usr/sbin/arp -n | grep %s | awk '{print $3}'" % matchMe, stdin=PIPE, stdout=arp, stderror=PIPE, shell=True)
+            if len(arp) > 0:
+                print "MAC FOUND IN ARP!!1!11!!1: \n%s" % arp
+                return arp
+                break
+
 
 def snmpAsk():
     f1 = open("/opt/raps/mib.txt", 'w')
