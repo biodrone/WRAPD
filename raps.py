@@ -80,6 +80,12 @@ def main(argv):
     if args.temp:
         print findLanMac("C4:E9:84:F8:28:73")
 
+def mongoInit(db, collk, collu, collr, ssid, bssid):
+    ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
+    collk.insert(ap)
+    collu.insert(ap)
+    collr.insert(ap)
+
 def scanWifi(scanint):
     global ipath
 
@@ -153,8 +159,8 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
                 return 2 #BSSID not found
         return 0
     else: #in case there's nothing in the db
-        print "There is nothing in the known database, please run RAPS with the install flag set."
-        sys.exit()
+        print "There is nothing in the known database, running init function."
+        mongoInit(db, collk, collu, collr, "Init", "DE:AD:BE:EF:CO:FE")
 
 def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
     found = 0
