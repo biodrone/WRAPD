@@ -155,7 +155,7 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
             else: #if BSSID doesn't match
                 ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
                 collr.insert(ap)
-                print "BSSID: " + bssid + " with SSID: " + ssid + " added to Rogue AP DB."
+                print "SSID: " + ssid + " with BSSID: " + bssid + " added to Rogue AP DB."
                 return 2 #BSSID not found
         return 0
     else: #in case there's nothing in the db
