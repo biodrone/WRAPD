@@ -146,47 +146,64 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
     """
     #run the findLanMac func here
     lanmac = findLanMac(bssid) #think about where this needs to be launched...
-    if collr.count({'SSID':ssid}) > 0:
-        for r in collr.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, '_id':0}):
+
+    if collk.count({'SSID':ssid}) > 0: #check if there's actually any APs in the db
+        for k in collk.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, '_id':0}):
             if str(a[u'SSID']) == ssid: #check ssid match
                 if str(a[u'BSSID']) == bssid:
                     if str(a[u'LANMAC']) == lanmac:
-                        print "Full RAP Match:\n%s, %s, %s." % ssid, bssid, lanmac
+                        #if a RAP has all these, there would be switching errors
+                        #which will be more obvious to network managers
+                        print "Expected SSID %s, all elements match." % ssid
+                        return 1
                     else:
-                        print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on SSID and BSSID." % ssid, bssid, lanmac
+                        print "Did you forget to add an AP to the known database?:\n%s, %s, %s\nAdding to Unknown DB for evaluation." % ssid, bssid, lanmac
                 else:
                     if str(a[u'LANMAC']) == lanmac:
                         print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on SSID and LANMAC." % ssid, bssid, lanmac
+                        ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
+                        collr.insert(ap)
                     else:
-                        print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on SSID." % ssid, bssid, lanmac
+                        print "Only matched on SSID %s, checking against the Rogue DB." % ssid
+                        if checkRogue(db, collk, collu, collr, ssid, bssid, lanmac) == 1:
+                            ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
+                            collr.insert(ap)
+                        else:
+                            print "SSID %s not in Rogue DB. Adding to Unknown DB for future analysis." % ssid
+                            ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
+                            collu.insert(ap)
+                        #look at running a seperate func here to check RAP
             else:
-                if str(a[u'BSSID']) == bssid:
-                    if str(a[u'LANMAC']) == lanmac:
-                        print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on BSSID and LANMAC." % ssid, bssid, lanmac
-                    else:
-                        print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on BSSID." % ssid, bssid, lanmac
-                else:
-                    if str(a[u'LANMAC']) == lanmac:
-                        print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on LANMAC." % ssid, bssid, lanmac
-                    else:
-                        print "Addind to Rogue DB\n%s, %s, %s\nRAP Match on SSID." % ssid, bssid, lanmac 
-
-
-    if collk.count({'SSID':ssid}) > 0: #check if there's actually any APs in the db
-        for a in collk.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, '_id':0}): #check for matches with SSID
-            if str(a[u'BSSID']) == bssid: #check for matches with BSSID
-                print "Expected AP %s, all elements match." % str(a[u'SSID'])
-                print "Check SNMP for Evil Twin Attack for safety."
-                return 1
-            else: #if BSSID doesn't match
-                ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
-                collr.insert(ap)
-                print "SSID: " + ssid + " with BSSID: " + bssid + " added to Rogue AP DB."
-                return 2 #BSSID not found
-        return 0
+                print "No SSID match on %s, checking Rogue DB." % ssid
+                return 0
     else: #in case there's nothing in the db
         print "There is nothing in the known database, running init function."
         mongoInit(db, collk, collu, collr, "Init", "DE:AD:BE:EF:CO:FE")
+
+def doTheMongo(db, collk, collu, collr, ssid, bssid, lanmac):
+    for r in collr.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, '_id':0}):
+        if str(a[u'SSID']) == ssid: #check ssid match
+            if str(a[u'BSSID']) == bssid:
+                if str(a[u'LANMAC']) == lanmac:
+                    print "Full RAP Match:\n%s, %s, %s." % ssid, bssid, lanmac
+                else:
+                    print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on SSID and BSSID." % ssid, bssid, lanmac
+            else:
+                if str(a[u'LANMAC']) == lanmac:
+                    print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on SSID and LANMAC." % ssid, bssid, lanmac
+                else:
+                    print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on SSID." % ssid, bssid, lanmac
+        else:
+            if str(a[u'BSSID']) == bssid:
+                if str(a[u'LANMAC']) == lanmac:
+                    print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on BSSID and LANMAC." % ssid, bssid, lanmac
+                else:
+                    print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on BSSID." % ssid, bssid, lanmac
+            else:
+                if str(a[u'LANMAC']) == lanmac:
+                    print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on LANMAC." % ssid, bssid, lanmac
+                else:
+                    print "Addind to Rogue DB\n%s, %s, %s\nRAP Match on SSID." % ssid, bssid, lanmac
 
 def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
     found = 0
