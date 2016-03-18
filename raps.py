@@ -180,7 +180,7 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
         print "There is nothing in the known database, running init function."
         mongoInit(db, collk, collu, collr, "Init", "DE:AD:BE:EF:CO:FE")
 
-def doTheMongo(db, collk, collu, collr, ssid, bssid, lanmac):
+def checkRogue(db, collk, collu, collr, ssid, bssid, lanmac):
     for r in collr.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, '_id':0}):
         if str(a[u'SSID']) == ssid: #check ssid match
             if str(a[u'BSSID']) == bssid:
