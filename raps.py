@@ -140,12 +140,9 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
     Return codes:
         -1 - Not on LAN
         -2 - Multiple matching MACs
-        0  - No match
-            Check SNMP match for Rogue AP
-        1  - SSID match, BSSID match
-            Check SNMP for Smart Evil Twin
-        2  - SSID match, BSSID no match
-            Check SNMP for Dumb Evil Twin or Smart Rogue AP
+         1 - Matched Known AP
+         2 - Matched Rogue AP
+         3 - Added AP to Unkown DB
     """
     #if lanman doesn't find anything, automatically add the AP to collu as it's not on the LAN
     lanmac = findLanMac(bssid)
@@ -169,15 +166,27 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
                         print "Expected SSID %s, all elements match." % ssid
                         return 1
                     else:
-                        print "Did you forget to add an AP to the known database?:\n%s, %s, %s\nAdding to Unknown DB for evaluation." % ssid, bssid, lanmac
-                        return 2
+                        print "Did you forget to add an AP to the known database?:\n%s, %s, %s\nChecking Rogue for Safety." % ssid, bssid, lanmac
+                        if checkRogue(db, collk, collu, collr, ssid, bssid, lanmac) != 1:
+                            print "Not in Rogue DB, checking Unknown DB."
+                            #launch unknown func here
+                            return 3
+                        else:
+                            print "AP already in Rogue DB, please find and eliminate the following:\n%s, %s, %s." % ssid, bssid, lanmac
+                            return 2
                 else:
                     if str(a[u'LANMAC']) == lanmac:
                         #print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on SSID and LANMAC." % ssid, bssid, lanmac
                         #ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
                         #collr.insert(ap)
-                        print "Did you forget to add an AP to the known database?:\n%s, %s, %s\nAdding to Unknown DB for evaluation." % ssid, bssid, lanmac
-                        return 2
+                        print "Did you forget to add an AP to the known database?:\n%s, %s, %s\nChecking Rogue for Safety." % ssid, bssid, lanmac
+                        if checkRogue(db, collk, collu, collr, ssid, bssid, lanmac) != 1:
+                            print "Not in Rogue DB, checking Unknown DB."
+                            #launch unknown func here
+                            return 3
+                        else:
+                            print "AP already in Rogue DB, please find and eliminate the following:\n%s, %s, %s." % ssid, bssid, lanmac
+                            return 2
                     else:
                         print "Only matched on SSID %s, checking against the Rogue DB." % ssid
                         if checkRogue(db, collk, collu, collr, ssid, bssid, lanmac) != 1:
@@ -185,16 +194,17 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
                             #launch unknown func here
                             return 3
                         else:
-                            print "SSID %s not in Rogue DB. Adding to Unknown DB for future analysis." % ssid
-                            print "Not in Rogue DB, checking Unknown DB."
-                            #launch unknown func here
-                            return 3
+                            print "AP already in Rogue DB, please find and eliminate the following:\n%s, %s, %s." % ssid, bssid, lanmac
+                            return 2
             else:
                 print "No SSID match on %s, checking Rogue DB." % ssid
                 if checkRogue(db, collk, collu, collr, ssid, bssid, lanmac) != 1:
                     print "Not in Rogue DB, checking Unknown DB."
                     #launch unknown func here
                     return 3
+                else:
+                    print "AP already in Rogue DB, please find and eliminate the following:\n%s, %s, %s." % ssid, bssid, lanmac
+                    return 2
 
     else: #in case there's nothing in the db
         print "There is nothing in the known database, running init function."
