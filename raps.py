@@ -54,6 +54,9 @@ def main(argv):
     #TODO: add arg for db location (or have a default location of /opt/raps)
     args = parser.parse_args()
 
+    if args.temp:
+        print findLanMac("C4:E9:84:F8:28:73")
+
     if args.auto: #TODO: Spawn a thread based on this
         print 'Running RAPS in auto mode'
         try:
@@ -77,9 +80,6 @@ def main(argv):
         for m in macs:
             doTheMongo(db, collk, collu, collr, ssids[x], macs[x])
             x = x + 1
-
-    if args.temp:
-        print findLanMac("C4:E9:84:F8:28:73")
 
 def mongoInit(db, collk, collu, collr, ssid, bssid, lanmac):
     ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
