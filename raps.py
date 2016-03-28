@@ -139,7 +139,7 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
     """
     Return codes:
         -1 - Not on LAN
-        -2 - Multiple matching MACs
+        -2 - Multiple matching MACs on LAN
          1 - Matched Known AP
          2 - Matched Rogue AP
          3 - Added AP to Unkown DB
