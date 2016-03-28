@@ -45,7 +45,7 @@ def main(argv):
     parser = argparse.ArgumentParser(usage='Find Rogue Access Points within scanning range')
     parser.add_argument('-t', '--temp', action='store_true', help='Real basic temp stuffs')
     parser.add_argument('-a', '--auto', action='store_true', help='Run in auto mode (assumes --fightback)',)
-    parser.add_argument('-c', '--clean', action='store_true', help='Clean databases, accepts k, r, or u')
+    parser.add_argument('-c', '--clean', action='store_true', dest='cleandb', default='kcu', help='Clean databases, accepts k/c/u (default: kcu)')
     parser.add_argument('-i', '--interface', help='Interface to scan on')
     # parser.add_argument('-si', '--switchIP', help='IP Address of core switch(es) or file containing IP addresses')
     # parser.add_argument('-sc', '--snmpCommunity', help='SNMP Community of switches to be polled')
@@ -54,7 +54,25 @@ def main(argv):
     #TODO: add arg for db location (or have a default location of /opt/raps)
     args = parser.parse_args()
 
-    if args.clean()
+    if args.clean:
+        print "Cleaning %s Database(s)" % cleandb
+        sys.exit() #remove when happy with func
+        try:
+            conn=pymongo.MongoClient()
+            print "Connected successfully!!!"
+        except pymongo.errors.ConnectionFailure, e:
+            print "Could not connect to MongoDB: %s" % e
+            sys.exit()
+        db = conn.aps
+        collk = db.known_aps
+        collu = db.unknown_aps
+        collr = db.rogue_aps
+        if args.cleandb.find('k'):
+            collk.remove({})
+        elif args.cleandb.find('r'):
+            collr.remove({})
+        elif args.cleandb.find('u'):
+            collu.remove({})
 
     if args.temp:
         print findLanMac("C4:E9:84:F8:28:73")
