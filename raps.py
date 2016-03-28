@@ -70,19 +70,29 @@ def main(argv):
 
     if args.unknown:
         print "The Unknown Database has %s Records" % collu.count()
-        for u in collu.find():
-            print u
+        if raw_input("Do you want to organise the Unkown DB into Known and Rogue? [y/N]") == "y" or "yes" or "Y":
+            for u in collu.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}): #might need to delete the first bracket entirely
+                print u
+                ap = {"SSID":str(a[u'SSID']), "BSSID":str(a[u'BSSID']), "LANMAC":str(a[u'LANMAC'])}
+                if raw_input("Which Database Would You Like to Add This to? [k/R]") == "k":
+                    collk.insert(ap)
+                else:
+                    collr.insert(ap)
+                collu.delete_one({"SSID":str(a[u'SSID']), "BSSID":str(a[u'BSSID']), "LANMAC":str(a[u'LANMAC'])})
+        else:
+            for u in collu.find():
+                print u
 
     if args.clean:
         print "Cleaning %s Database(s)" % cleandb
         sys.exit() #remove when happy with func
 
         if args.cleandb.find('k'):
-            collk.remove({})
+            collk.delete_many({})
         elif args.cleandb.find('r'):
-            collr.remove({})
+            collr.delete_many({})
         elif args.cleandb.find('u'):
-            collu.remove({})
+            collu.delete_many({})
 
     if args.temp:
         print findLanMac("C4:E9:84:F8:28:73")
@@ -327,9 +337,9 @@ def mongoTests(db, collk, collu, collr):
     for a in collr.find(): #loops over the collection and prints each document
         print a
     print collr.find_one()
-    #collk.remove({}) #remove all documents from collection
-    #collu.remove({})
-    #collr.remove({})
+    #collk.delete_many({}) #remove all documents from collection
+    #collu.delete_many({})
+    #collr.delete_many({})
 
 if __name__ == "__main__":
     main(sys.argv)
