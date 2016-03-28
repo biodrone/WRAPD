@@ -43,10 +43,10 @@ def main(argv):
 
     parser = argparse.ArgumentParser(usage='Find Rogue Access Points within scanning range')
     parser.add_argument('-t', '--temp', action='store_true', help='Real basic temp stuffs')
-    parser.add_argument('-a', '--auto', action='store_true', help='Run in auto mode',) #maybe make this the default without flags?
-    parser.add_argument('-c', '--clean', action='store_true', dest='cleandb', default='kcu', help='Clean databases, accepts k/c/u (default: kcu)')
+    parser.add_argument('-a', '--auto', action='store_true', help='Run in Auto Mode',) #maybe make this the default without flags?
+    parser.add_argument('-c', '--clean', action='store_true', dest='cleandb', default='kcu', help='Clean Databases, Accepts k/c/u (default: kcu)')
     parser.add_argument('-u', '--unknown', action='store_true', help='View the Unknown database',)
-    parser.add_argument('-i', '--interface', help='Interface to scan on')
+    parser.add_argument('-i', '--interface', help='Interface to Scan on')
     # parser.add_argument('-si', '--switchIP', help='IP Address of core switch(es) or file containing IP addresses')
     # parser.add_argument('-sc', '--snmpCommunity', help='SNMP Community of switches to be polled')
     # parser.add_argument('-sp', '--snmpPort', help='Port that SNMP operates on')
@@ -54,19 +54,24 @@ def main(argv):
     #TODO: add arg for db location (or have a default location of /opt/raps)
     args = parser.parse_args()
 
+    try:
+        conn=pymongo.MongoClient()
+        print "Connected successfully!!!"
+    except pymongo.errors.ConnectionFailure, e:
+        print "Could not connect to MongoDB: %s" % e
+        sys.exit()
+
+    #TODO: do some logic here to determine if a db exists already
+    #define mongo DBs
+    db = conn.aps
+    collk = db.known_aps
+    collu = db.unknown_aps
+    collr = db.rogue_aps
+
     if args.clean:
         print "Cleaning %s Database(s)" % cleandb
         sys.exit() #remove when happy with func
-        try:
-            conn=pymongo.MongoClient()
-            print "Connected successfully!!!"
-        except pymongo.errors.ConnectionFailure, e:
-            print "Could not connect to MongoDB: %s" % e
-            sys.exit()
-        db = conn.aps
-        collk = db.known_aps
-        collu = db.unknown_aps
-        collr = db.rogue_aps
+
         if args.cleandb.find('k'):
             collk.remove({})
         elif args.cleandb.find('r'):
@@ -79,19 +84,6 @@ def main(argv):
 
     if args.auto: #TODO: Spawn a thread based on this
         print 'Running RAPS in auto mode'
-        try:
-            conn=pymongo.MongoClient()
-            print "Connected successfully!!!"
-        except pymongo.errors.ConnectionFailure, e:
-            print "Could not connect to MongoDB: %s" % e
-            sys.exit()
-
-        #TODO: do some logic here to determine if a db exists already
-        #define mongo DBs
-        db = conn.aps
-        collk = db.known_aps
-        collu = db.unknown_aps
-        collr = db.rogue_aps
 
         #scanWifi(args.interface)
         macs, ssids = readDump()
