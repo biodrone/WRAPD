@@ -17,7 +17,7 @@ General TODO:
 - Fix mongo DBs because currently everything is going towards the known APs DB,
     need to go to unknown if not in known as known will be preconfigured (or possibly set up on first run?)
 - Have a point that the user can see the contents of the unknown DB and pick whether to add to known or rogue
-- Add arg to view unknown db
+- Create function to check Unknown DB and add AP if they are missing
 
 """
 
