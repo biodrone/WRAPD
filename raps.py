@@ -45,7 +45,7 @@ def main(argv):
     parser = argparse.ArgumentParser(usage='Find rogue Access Points within scanning range')
     parser.add_argument('-t', '--temp', action='store_true', help='Real basic temp stuffs')
     parser.add_argument('-a', '--auto', action='store_true', help='Run in auto mode (assumes --fightback)',)
-    parser.add_argument('-f', '--fightback', action='store_true', help='Fights back against Rogue AP with Reaver and Honey Pot')
+    parser.add_argument('-c', '--clean', action='store_true', help='Clean databases, accepts k, r, or u')
     parser.add_argument('-i', '--interface', help='Interface to scan on')
     # parser.add_argument('-si', '--switchIP', help='IP Address of core switch(es) or file containing IP addresses')
     # parser.add_argument('-sc', '--snmpCommunity', help='SNMP Community of switches to be polled')
