@@ -68,6 +68,11 @@ def main(argv):
     collu = db.unknown_aps
     collr = db.rogue_aps
 
+    if args.unknown:
+        print "The Unknown Database has %s Records" % collu.count()
+        for u in collu.find():
+            print u
+
     if args.clean:
         print "Cleaning %s Database(s)" % cleandb
         sys.exit() #remove when happy with func
