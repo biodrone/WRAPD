@@ -18,7 +18,6 @@ General TODO:
     need to go to unknown if not in known as known will be preconfigured (or possibly set up on first run?)
 - Have a point that the user can see the contents of the unknown DB and pick whether to add to known or rogue
 - Add arg to view unknown db
-- Add an option to clean all DBs
 
 """
 
@@ -44,8 +43,9 @@ def main(argv):
 
     parser = argparse.ArgumentParser(usage='Find Rogue Access Points within scanning range')
     parser.add_argument('-t', '--temp', action='store_true', help='Real basic temp stuffs')
-    parser.add_argument('-a', '--auto', action='store_true', help='Run in auto mode (assumes --fightback)',)
+    parser.add_argument('-a', '--auto', action='store_true', help='Run in auto mode',) #maybe make this the default without flags?
     parser.add_argument('-c', '--clean', action='store_true', dest='cleandb', default='kcu', help='Clean databases, accepts k/c/u (default: kcu)')
+    parser.add_argument('-u', '--unknown', action='store_true', help='View the Unknown database',)
     parser.add_argument('-i', '--interface', help='Interface to scan on')
     # parser.add_argument('-si', '--switchIP', help='IP Address of core switch(es) or file containing IP addresses')
     # parser.add_argument('-sc', '--snmpCommunity', help='SNMP Community of switches to be polled')
