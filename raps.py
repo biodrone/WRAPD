@@ -17,6 +17,8 @@ General TODO:
 - Fix mongo DBs because currently everything is going towards the known APs DB,
     need to go to unknown if not in known as known will be preconfigured (or possibly set up on first run?)
 - Have a point that the user can see the contents of the unknown DB and pick whether to add to known or rogue
+- Add arg to view unknown db
+- Add an option to clean all DBs
 
 """
 
@@ -50,7 +52,6 @@ def main(argv):
     # parser.add_argument('-sp', '--snmpPort', help='Port that SNMP operates on')
 
     #TODO: add arg for db location (or have a default location of /opt/raps)
-    #TODO: have a flag to init the mongodb with a file or a list of MACs
     args = parser.parse_args()
 
     if args.auto: #TODO: Spawn a thread based on this
@@ -80,7 +81,7 @@ def main(argv):
     if args.temp:
         print findLanMac("C4:E9:84:F8:28:73")
 
-def mongoInit(db, collk, collu, collr, ssid, bssid):
+def mongoInit(db, collk, collu, collr, ssid, bssid, lanmac):
     ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
     collk.insert(ap)
     collu.insert(ap)
@@ -137,18 +138,29 @@ def readDump(): #parse the wifi dump .csv for MACs and SSIDs
 def doTheMongo(db, collk, collu, collr, ssid, bssid):
     """
     Return codes:
-        0 - No match
+        -1 - Not on LAN
+        -2 - Multiple matching MACs
+        0  - No match
             Check SNMP match for Rogue AP
-        1 - SSID match, BSSID match
+        1  - SSID match, BSSID match
             Check SNMP for Smart Evil Twin
-        2 - SSID match, BSSID no match
+        2  - SSID match, BSSID no match
             Check SNMP for Dumb Evil Twin or Smart Rogue AP
     """
-    #run the findLanMac func here
-    lanmac = findLanMac(bssid) #think about where this needs to be launched...
+    #if lanman doesn't find anything, automatically add the AP to collu as it's not on the LAN
+    lanmac = findLanMac(bssid)
+    if lanmac == 0:
+        print "AP with SSID %s, BSSID %s is not on the LAN." % ssid, bssid
+        ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
+        collu.insert(ap)
+        return -1
+    elif lanmac == 1:
+        #multiple MACs found, do something with this later
+        print "Multiple MACs found, please search for the device manually!"
+        return -2
 
     if collk.count({'SSID':ssid}) > 0: #check if there's actually any APs in the db
-        for k in collk.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, '_id':0}):
+        for k in collk.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}):
             if str(a[u'SSID']) == ssid: #check ssid match
                 if str(a[u'BSSID']) == bssid:
                     if str(a[u'LANMAC']) == lanmac:
@@ -158,54 +170,74 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
                         return 1
                     else:
                         print "Did you forget to add an AP to the known database?:\n%s, %s, %s\nAdding to Unknown DB for evaluation." % ssid, bssid, lanmac
+                        return 2
                 else:
                     if str(a[u'LANMAC']) == lanmac:
-                        print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on SSID and LANMAC." % ssid, bssid, lanmac
-                        ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
-                        collr.insert(ap)
+                        #print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on SSID and LANMAC." % ssid, bssid, lanmac
+                        #ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
+                        #collr.insert(ap)
+                        print "Did you forget to add an AP to the known database?:\n%s, %s, %s\nAdding to Unknown DB for evaluation." % ssid, bssid, lanmac
+                        return 2
                     else:
                         print "Only matched on SSID %s, checking against the Rogue DB." % ssid
-                        if checkRogue(db, collk, collu, collr, ssid, bssid, lanmac) == 1:
-                            ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
-                            collr.insert(ap)
+                        if checkRogue(db, collk, collu, collr, ssid, bssid, lanmac) != 1:
+                            print "Not in Rogue DB, checking Unknown DB."
+                            #launch unknown func here
+                            return 3
                         else:
                             print "SSID %s not in Rogue DB. Adding to Unknown DB for future analysis." % ssid
-                            ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
-                            collu.insert(ap)
-                        #look at running a seperate func here to check RAP
+                            print "Not in Rogue DB, checking Unknown DB."
+                            #launch unknown func here
+                            return 3
             else:
                 print "No SSID match on %s, checking Rogue DB." % ssid
-                return 0
+                if checkRogue(db, collk, collu, collr, ssid, bssid, lanmac) != 1:
+                    print "Not in Rogue DB, checking Unknown DB."
+                    #launch unknown func here
+                    return 3
+
     else: #in case there's nothing in the db
         print "There is nothing in the known database, running init function."
-        mongoInit(db, collk, collu, collr, "Init", "DE:AD:BE:EF:CO:FE")
+        mongoInit(db, collk, collu, collr, "Init", "DE:AD:BE:EF:CO:FE", "DE:AD:BE:EF:CO:FE")
+        doTheMongo(db, collk, collu, collr, ssid, bssid, lanmac)
 
 def checkRogue(db, collk, collu, collr, ssid, bssid, lanmac):
-    for r in collr.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, '_id':0}):
+    for r in collr.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}):
         if str(a[u'SSID']) == ssid: #check ssid match
             if str(a[u'BSSID']) == bssid:
                 if str(a[u'LANMAC']) == lanmac:
                     print "Full RAP Match:\n%s, %s, %s." % ssid, bssid, lanmac
+                    return 1
                 else:
-                    print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on SSID and BSSID." % ssid, bssid, lanmac
+                    print "Match on Rogue DB:\n%s, %s, %s\nRAP Match on SSID and BSSID." % ssid, bssid, lanmac
+                    return 1
             else:
                 if str(a[u'LANMAC']) == lanmac:
-                    print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on SSID and LANMAC." % ssid, bssid, lanmac
+                    print "Match on Rogue DB:\n%s, %s, %s\nRAP Match on SSID and LANMAC." % ssid, bssid, lanmac
+                    return 1
                 else:
-                    print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on SSID." % ssid, bssid, lanmac
+                    print "Match on Rogue DB:\n%s, %s, %s\nRAP Match on SSID." % ssid, bssid, lanmac
+                    return 1
         else:
             if str(a[u'BSSID']) == bssid:
                 if str(a[u'LANMAC']) == lanmac:
-                    print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on BSSID and LANMAC." % ssid, bssid, lanmac
+                    print "Match on Rogue DB:\n%s, %s, %s\nRAP Match on BSSID and LANMAC." % ssid, bssid, lanmac
+                    return 1
                 else:
-                    print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on BSSID." % ssid, bssid, lanmac
+                    print "Match on Rogue DB:\n%s, %s, %s\nRAP Match on BSSID." % ssid, bssid, lanmac
+                    return 1
             else:
                 if str(a[u'LANMAC']) == lanmac:
-                    print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on LANMAC." % ssid, bssid, lanmac
-                else:
-                    print "Addind to Rogue DB\n%s, %s, %s\nRAP Match on SSID." % ssid, bssid, lanmac
+                    print "Match on Rogue DB:\n%s, %s, %s\nRAP Match on LANMAC." % ssid, bssid, lanmac
+                    return 1
 
 def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
+"""
+Returns:
+XX:XX:XX:XX:XX:XX - Found MAC
+0                 - Not Found
+1                 - Found Multiple MACs that match
+"""
     found = 0
     vendor = bssid[:8]
     matchMe = bssid[:-1]
@@ -226,7 +258,7 @@ def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
             break
         elif found > 1:
             print "Multiple matching MACs found, do something else with this later!"
-            sys.exit() #TODO: find something else to do with this
+            return 1
         matchMe = matchMe[:-1]
         #do something like check the arp on the pi here just in case the above fails
         arp = ""
@@ -237,7 +269,7 @@ def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
                 print "MAC FOUND IN ARP!!1!11!!1: \n%s" % arp
                 return arp
                 break
-
+        return 0
 
 def snmpAsk():
     f1 = open("/opt/raps/mib.txt", 'w')
