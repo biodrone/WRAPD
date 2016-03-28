@@ -42,7 +42,7 @@ def main(argv):
     global ipath
     x = 0
 
-    parser = argparse.ArgumentParser(usage='Find rogue Access Points within scanning range')
+    parser = argparse.ArgumentParser(usage='Find Rogue Access Points within scanning range')
     parser.add_argument('-t', '--temp', action='store_true', help='Real basic temp stuffs')
     parser.add_argument('-a', '--auto', action='store_true', help='Run in auto mode (assumes --fightback)',)
     parser.add_argument('-c', '--clean', action='store_true', help='Clean databases, accepts k, r, or u')
@@ -53,6 +53,8 @@ def main(argv):
 
     #TODO: add arg for db location (or have a default location of /opt/raps)
     args = parser.parse_args()
+
+    if args.clean()
 
     if args.temp:
         print findLanMac("C4:E9:84:F8:28:73")
