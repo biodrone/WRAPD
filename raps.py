@@ -209,7 +209,12 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
                         print "Did you forget to add an AP to the known database?:\n%s, %s, %s\nChecking Rogue for Safety." % ssid, bssid, lanmac
                         if checkRogue(db, collk, collu, collr, ssid, bssid, lanmac) != 1:
                             print "Not in Rogue DB, checking Unknown DB."
-                            #launch unknown func here
+                            if checkUnknown(db, collk, collu, collr, ssid, bssid, lanmac) != 1:
+                                print "Not in Unknown DB, Adding %s, %s, %s." % ssid, bssid, lanmac
+                                ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
+                                collu.insert(ap)
+                            else:
+                                print "Already in Unknown DB, please launch with -u flag to review."
                             return 3
                         else:
                             print "AP already in Rogue DB, please find and eliminate the following:\n%s, %s, %s." % ssid, bssid, lanmac
@@ -218,7 +223,12 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
                         print "Only matched on SSID %s, checking against the Rogue DB." % ssid
                         if checkRogue(db, collk, collu, collr, ssid, bssid, lanmac) != 1:
                             print "Not in Rogue DB, checking Unknown DB."
-                            #launch unknown func here
+                            if checkUnknown(db, collk, collu, collr, ssid, bssid, lanmac) != 1:
+                                print "Not in Unknown DB, Adding %s, %s, %s." % ssid, bssid, lanmac
+                                ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
+                                collu.insert(ap)
+                            else:
+                                print "Already in Unknown DB, please launch with -u flag to review."
                             return 3
                         else:
                             print "AP already in Rogue DB, please find and eliminate the following:\n%s, %s, %s." % ssid, bssid, lanmac
@@ -227,7 +237,12 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
                 print "No SSID match on %s, checking Rogue DB." % ssid
                 if checkRogue(db, collk, collu, collr, ssid, bssid, lanmac) != 1:
                     print "Not in Rogue DB, checking Unknown DB."
-                    #launch unknown func here
+                    if checkUnknown(db, collk, collu, collr, ssid, bssid, lanmac) != 1:
+                        print "Not in Unknown DB, Adding %s, %s, %s." % ssid, bssid, lanmac
+                        ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
+                        collu.insert(ap)
+                    else:
+                        print "Already in Unknown DB, please launch with -u flag to review."
                     return 3
                 else:
                     print "AP already in Rogue DB, please find and eliminate the following:\n%s, %s, %s." % ssid, bssid, lanmac
@@ -266,6 +281,36 @@ def checkRogue(db, collk, collu, collr, ssid, bssid, lanmac):
             else:
                 if str(a[u'LANMAC']) == lanmac:
                     print "Match on Rogue DB:\n%s, %s, %s\nRAP Match on LANMAC." % ssid, bssid, lanmac
+                    return 1
+
+def checkUnknown(db, collk, collu, collr, ssid, bssid, lanmac):
+    for u in collu.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}):
+        if str(a[u'SSID']) == ssid: #check ssid match
+            if str(a[u'BSSID']) == bssid:
+                if str(a[u'LANMAC']) == lanmac:
+                    print "Full Unknown Match:\n%s, %s, %s." % ssid, bssid, lanmac
+                    return 1
+                else:
+                    print "Match on Unknown DB:\n%s, %s, %s\nUnknown Match on SSID and BSSID." % ssid, bssid, lanmac
+                    return 1
+            else:
+                if str(a[u'LANMAC']) == lanmac:
+                    print "Match on Unknown DB:\n%s, %s, %s\nUnknown Match on SSID and LANMAC." % ssid, bssid, lanmac
+                    return 1
+                else:
+                    print "Match on Unknown DB:\n%s, %s, %s\nUnknown Match on SSID." % ssid, bssid, lanmac
+                    return 1
+        else:
+            if str(a[u'BSSID']) == bssid:
+                if str(a[u'LANMAC']) == lanmac:
+                    print "Match on Unknown DB:\n%s, %s, %s\nUnknown Match on BSSID and LANMAC." % ssid, bssid, lanmac
+                    return 1
+                else:
+                    print "Match on Unknown DB:\n%s, %s, %s\nUnknown Match on BSSID." % ssid, bssid, lanmac
+                    return 1
+            else:
+                if str(a[u'LANMAC']) == lanmac:
+                    print "Match on Unknown DB:\n%s, %s, %s\nUnknown Match on LANMAC." % ssid, bssid, lanmac
                     return 1
 
 def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
