@@ -81,8 +81,9 @@ def main(argv):
         else:
             for u in collu.find():
                 print u
-    print "CleanDB is " % args.cleandb
+    print "CleanDB is " % str(args.cleandb)
     sys.exit()
+    
     if args.cleandb:
         print "Cleaning %s Database(s)" % args.cleandb
         sys.exit() #remove when happy with func
