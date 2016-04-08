@@ -68,7 +68,7 @@ def main(argv):
     collr = db.rogue_aps
 
     if args.unknown:
-        if collk.count({'SSID':ssid}) > 0: #check if there's actually any APs in the db
+        if collu.count({}) > 0: #check if there's actually any APs in the db
             print "The Unknown Database has %s Records" % collu.count()
             if raw_input("Do you want to organise the Unkown DB into Known and Rogue? [y/N]") == "y" or "yes" or "Y":
                 for u in collu.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}): #might need to delete the first bracket entirely
