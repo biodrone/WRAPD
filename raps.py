@@ -84,7 +84,7 @@ def main(argv):
     print "CleanDB is " % args.cleandb
     sys.exit()
     if args.cleandb:
-        print "Cleaning %s Database(s)" % args.cleandbcleandb
+        print "Cleaning %s Database(s)" % args.cleandb
         sys.exit() #remove when happy with func
 
         if args.cleandb.find('k'):
