@@ -84,8 +84,6 @@ def main(argv):
 
     if args.cleandb:
         print "Cleaning %s Database(s)" % args.cleandb
-        sys.exit() #remove when happy with func
-
         if args.cleandb.find('k'):
             collk.delete_many({})
         elif args.cleandb.find('r'):
