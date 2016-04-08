@@ -99,7 +99,13 @@ def main(argv):
             collu.remove({})
 
     if args.temp:
-        print findLanMac("C4:E9:84:F8:28:73")
+        for k in collk.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}): #might need to delete the first bracket entirely
+            print k
+        for u in collu.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}): #might need to delete the first bracket entirely
+            print u
+        for r in collr.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}): #might need to delete the first bracket entirely
+            print r
+        #print findLanMac("C4:E9:84:F8:28:73")
 
     if args.auto: #TODO: Spawn a thread based on this
         print 'Running RAPS in auto mode'
