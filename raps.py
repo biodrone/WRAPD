@@ -285,7 +285,7 @@ def checkUnknown(db, collk, collu, collr, ssid, bssid, lanmac):
         if str(a[u'SSID']) == ssid: #check ssid match
             if str(a[u'BSSID']) == bssid:
                 if str(a[u'LANMAC']) == lanmac:
-                    print "Full Unknown Match:\n%s, %s, %s." % (ssid, bssid, lanmac
+                    print "Full Unknown Match:\n%s, %s, %s." % (ssid, bssid, lanmac)
                     return 1
                 else:
                     print "Match on Unknown DB:\n%s, %s, %s\nUnknown Match on SSID and BSSID." % (ssid, bssid, lanmac)
