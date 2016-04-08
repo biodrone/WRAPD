@@ -99,7 +99,7 @@ def main(argv):
 
         #scanWifi(args.interface)
         macs, ssids = readDump()
-        mongoTests(db, collk, collu, collr)
+        #mongoTests(db, collk, collu, collr)
 
         for m in macs:
             doTheMongo(db, collk, collu, collr, ssids[x], macs[x])
@@ -171,7 +171,7 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
     #if lanman doesn't find anything, automatically add the AP to collu as it's not on the LAN
     lanmac = findLanMac(bssid)
     if lanmac == 0:
-        print "AP with SSID %s, BSSID %s is not on the LAN." % ssid, bssid
+        print "AP with SSID %s, BSSID %s is not on the LAN." % (ssid, bssid)
         ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
         collu.insert(ap)
         return -1
