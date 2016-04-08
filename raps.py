@@ -68,19 +68,22 @@ def main(argv):
     collr = db.rogue_aps
 
     if args.unknown:
-        print "The Unknown Database has %s Records" % collu.count()
-        if raw_input("Do you want to organise the Unkown DB into Known and Rogue? [y/N]") == "y" or "yes" or "Y":
-            for u in collu.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}): #might need to delete the first bracket entirely
-                print u
-                ap = {"SSID":str(u[u'SSID']), "BSSID":str(u[u'BSSID']), "LANMAC":str(u[u'LANMAC'])}
-                if raw_input("Which Database Would You Like to Add This to? [k/R]") == "k":
-                    collk.insert(ap)
-                else:
-                    collr.insert(ap)
-                collu.delete_one({"SSID":str(u[u'SSID']), "BSSID":str(u[u'BSSID']), "LANMAC":str(u[u'LANMAC'])})
+        if collk.count({'SSID':ssid}) > 0: #check if there's actually any APs in the db
+            print "The Unknown Database has %s Records" % collu.count()
+            if raw_input("Do you want to organise the Unkown DB into Known and Rogue? [y/N]") == "y" or "yes" or "Y":
+                for u in collu.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}): #might need to delete the first bracket entirely
+                    print u
+                    ap = {"SSID":str(u[u'SSID']), "BSSID":str(u[u'BSSID']), "LANMAC":str(u[u'LANMAC'])}
+                    if raw_input("Which Database Would You Like to Add This to? [k/R]") == "k":
+                        collk.insert(ap)
+                    else:
+                        collr.insert(ap)
+                    collu.delete_one({"SSID":str(u[u'SSID']), "BSSID":str(u[u'BSSID']), "LANMAC":str(u[u'LANMAC'])})
+            else:
+                for u in collu.find():
+                    print u
         else:
-            for u in collu.find():
-                print u
+            print "The Unknown Database is Empty."
 
     if args.cleandb:
         #print "Cleaning %s Database(s)" % args.cleandb
