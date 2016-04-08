@@ -85,11 +85,11 @@ def main(argv):
     if args.cleandb:
         print "Cleaning %s Database(s)" % args.cleandb
         if args.cleandb.find('k'):
-            collk.delete_many({})
+            collk.remove({})
         elif args.cleandb.find('r'):
-            collr.delete_many({})
+            collr.remove({})
         elif args.cleandb.find('u'):
-            collu.delete_many({})
+            collu.remove({})
 
     if args.temp:
         print findLanMac("C4:E9:84:F8:28:73")
