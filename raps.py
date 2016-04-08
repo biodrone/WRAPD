@@ -313,12 +313,11 @@ def checkUnknown(db, collk, collu, collr, ssid, bssid, lanmac):
                     return 1
 
 def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
-"""
-Returns:
-XX:XX:XX:XX:XX:XX - Found MAC
-0                 - Not Found
-1                 - Found Multiple MACs that match
-"""
+
+#Returns:
+#XX:XX:XX:XX:XX:XX - Found MAC
+#0                 - Not Found
+#1                 - Found Multiple MACs that match
     found = 0
     vendor = bssid[:8]
     matchMe = bssid[:-1]
