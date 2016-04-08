@@ -81,7 +81,7 @@ def main(argv):
         else:
             for u in collu.find():
                 print u
-    print args.cleandb
+    print type(args.cleandb)
     sys.exit()
 
     if args.cleandb:
