@@ -81,9 +81,10 @@ def main(argv):
         else:
             for u in collu.find():
                 print u
-
+    print "CleanDB is " % args.cleandb
+    sys.exit()
     if args.cleandb:
-        print "Cleaning %s Database(s)" % cleandb
+        print "Cleaning %s Database(s)" % args.cleandbcleandb
         sys.exit() #remove when happy with func
 
         if args.cleandb.find('k'):
