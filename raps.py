@@ -43,7 +43,7 @@ def main(argv):
     parser = argparse.ArgumentParser(usage='Find Rogue Access Points within scanning range')
     parser.add_argument('-t', '--temp', action='store_true', help='Real basic temp stuffs')
     parser.add_argument('-a', '--auto', action='store_true', help='Run in Auto Mode',) #maybe make this the default without flags?
-    parser.add_argument('-c', '--clean', dest='cleandb', default='kcu', help='Clean Databases, Accepts k/c/u (default: kcu)')
+    parser.add_argument('-c', '--clean', action='store_true', dest='cleandb', default='kcu', help='Clean Databases, Accepts k/c/u (default: kcu)')
     parser.add_argument('-u', '--unknown', action='store_true', help='View the Unknown database',)
     parser.add_argument('-i', '--interface', help='Interface to Scan on')
     # parser.add_argument('-si', '--switchIP', help='IP Address of core switch(es) or file containing IP addresses')
@@ -82,6 +82,7 @@ def main(argv):
             for u in collu.find():
                 print u
     print type(args.cleandb)
+    print args.cleandb
     sys.exit()
 
     if args.cleandb:
