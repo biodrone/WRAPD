@@ -84,13 +84,13 @@ def main(argv):
 
     if args.cleandb:
         #print "Cleaning %s Database(s)" % args.cleandb
-        if args.cleandb.find('k'):
+        if args.cleandb.find('k') != -1:
             print "Cleaning Known DB"
             collk.remove({})
-        elif args.cleandb.find('r'):
+        if args.cleandb.find('r') != -1:
             print "Cleaning Rogue DB"
             collr.remove({})
-        elif args.cleandb.find('u'):
+        if args.cleandb.find('u') != -1:
             print "Cleaning Unknown DB"
             collu.remove({})
 
