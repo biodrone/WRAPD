@@ -104,7 +104,7 @@ def main(argv):
     if args.auto: #TODO: Spawn a thread based on this
         print 'Running RAPS in auto mode'
 
-        #scanWifi(args.interface)
+        scanWifi(args.interface)
         macs, ssids = readDump()
         #mongoTests(db, collk, collu, collr)
 
@@ -331,7 +331,7 @@ def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
         if matchMe[len(matchMe) - 1] == ":":
             matchMe = matchMe[:-1]
 
-        #snmpAsk() #enable this in live environment to run a fresh snmp capture
+        snmpAsk() #enable this in live environment to run a fresh snmp capture
         snmp = snmpRead()
         for s in snmp:
             s = s.replace(" ", ":")
