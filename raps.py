@@ -112,6 +112,8 @@ def main(argv):
 
         scanWifi(args.interface)
         macs, ssids = readDump()
+        print ssids
+        print macs
         #mongoTests(db, collk, collu, collr)
 
         for m in macs:
@@ -345,7 +347,6 @@ def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
         if matchMe[len(matchMe) - 1] == ":":
             matchMe = matchMe[:-1]
 
-        snmpAsk() #enable this in live environment to run a fresh snmp capture
         snmp = snmpRead()
         for s in snmp:
             s = s.replace(" ", ":")
@@ -360,14 +361,14 @@ def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
             return 1
         matchMe = matchMe[:-1]
         #do something like check the arp on the pi here just in case the above fails
-        arp = ""
-        matchMe = bssid[:-1]
-        while matchMe < 8:
-            Popen("/usr/sbin/arp -n | grep %s | awk '{print $3}'" % matchMe, stdin=PIPE, stdout=arp, stderror=PIPE, shell=True)
-            if len(arp) > 0:
-                print "MAC FOUND IN ARP!!1!11!!1: \n%s" % arp
-                return arp
-                break
+        # arp = ""
+        # matchMe = bssid[:-1]
+        # while matchMe < 8:
+        #     Popen("/usr/sbin/arp -n | grep %s | awk '{print $3}'" % matchMe, stdin=PIPE, stdout=arp, stderror=PIPE, shell=True)
+        #     if len(arp) > 0:
+        #         print "MAC FOUND IN ARP!!1!11!!1: \n%s" % arp
+        #         return arp
+        #         break
         return 0
 
 def snmpAsk():
