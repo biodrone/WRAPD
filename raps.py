@@ -77,7 +77,7 @@ def main(argv):
                     collk.insert(ap)
                 else:
                     collr.insert(ap)
-                collu.delete_one({"SSID":str(a[u'SSID']), "BSSID":str(a[u'BSSID']), "LANMAC":str(a[u'LANMAC'])})
+                collu.delete_one({"SSID":str(u[u'SSID']), "BSSID":str(u[u'BSSID']), "LANMAC":str(u[u'LANMAC'])})
         else:
             for u in collu.find():
                 print u
@@ -182,9 +182,9 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
 
     if collk.count({'SSID':ssid}) > 0: #check if there's actually any APs in the db
         for k in collk.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}):
-            if str(a[u'SSID']) == ssid: #check ssid match
-                if str(a[u'BSSID']) == bssid:
-                    if str(a[u'LANMAC']) == lanmac:
+            if str(k[u'SSID']) == ssid: #check ssid match
+                if str(k[u'BSSID']) == bssid:
+                    if str(k[u'LANMAC']) == lanmac:
                         #if a RAP has all these, there would be switching errors
                         #which will be more obvious to network managers
                         print "Expected SSID %s, all elements match." % ssid
@@ -199,7 +199,7 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
                             print "AP already in Rogue DB, please find and eliminate the following:\n%s, %s, %s." % (ssid, bssid, lanmac)
                             return 2
                 else:
-                    if str(a[u'LANMAC']) == lanmac:
+                    if str(k[u'LANMAC']) == lanmac:
                         #print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on SSID and LANMAC." % ssid, bssid, lanmac
                         #ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
                         #collr.insert(ap)
@@ -252,24 +252,24 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
 
 def checkRogue(db, collk, collu, collr, ssid, bssid, lanmac):
     for r in collr.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}):
-        if str(a[u'SSID']) == ssid: #check ssid match
-            if str(a[u'BSSID']) == bssid:
-                if str(a[u'LANMAC']) == lanmac:
+        if str(r[u'SSID']) == ssid: #check ssid match
+            if str(r[u'BSSID']) == bssid:
+                if str(r[u'LANMAC']) == lanmac:
                     print "Full RAP Match:\n%s, %s, %s." % (ssid, bssid, lanmac)
                     return 1
                 else:
                     print "Match on Rogue DB:\n%s, %s, %s\nRAP Match on SSID and BSSID." % (ssid, bssid, lanmac)
                     return 1
             else:
-                if str(a[u'LANMAC']) == lanmac:
+                if str(r[u'LANMAC']) == lanmac:
                     print "Match on Rogue DB:\n%s, %s, %s\nRAP Match on SSID and LANMAC." % (ssid, bssid, lanmac)
                     return 1
                 else:
                     print "Match on Rogue DB:\n%s, %s, %s\nRAP Match on SSID." % (ssid, bssid, lanmac)
                     return 1
         else:
-            if str(a[u'BSSID']) == bssid:
-                if str(a[u'LANMAC']) == lanmac:
+            if str(r[u'BSSID']) == bssid:
+                if str(r[u'LANMAC']) == lanmac:
                     print "Match on Rogue DB:\n%s, %s, %s\nRAP Match on BSSID and LANMAC." % (ssid, bssid, lanmac)
                     return 1
                 else:
@@ -282,31 +282,31 @@ def checkRogue(db, collk, collu, collr, ssid, bssid, lanmac):
 
 def checkUnknown(db, collk, collu, collr, ssid, bssid, lanmac):
     for u in collu.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}):
-        if str(a[u'SSID']) == ssid: #check ssid match
-            if str(a[u'BSSID']) == bssid:
-                if str(a[u'LANMAC']) == lanmac:
+        if str(u[u'SSID']) == ssid: #check ssid match
+            if str(u[u'BSSID']) == bssid:
+                if str(u[u'LANMAC']) == lanmac:
                     print "Full Unknown Match:\n%s, %s, %s." % (ssid, bssid, lanmac)
                     return 1
                 else:
                     print "Match on Unknown DB:\n%s, %s, %s\nUnknown Match on SSID and BSSID." % (ssid, bssid, lanmac)
                     return 1
             else:
-                if str(a[u'LANMAC']) == lanmac:
+                if str(u[u'LANMAC']) == lanmac:
                     print "Match on Unknown DB:\n%s, %s, %s\nUnknown Match on SSID and LANMAC." % (ssid, bssid, lanmac)
                     return 1
                 else:
                     print "Match on Unknown DB:\n%s, %s, %s\nUnknown Match on SSID." % (ssid, bssid, lanmac)
                     return 1
         else:
-            if str(a[u'BSSID']) == bssid:
-                if str(a[u'LANMAC']) == lanmac:
+            if str(u[u'BSSID']) == bssid:
+                if str(u[u'LANMAC']) == lanmac:
                     print "Match on Unknown DB:\n%s, %s, %s\nUnknown Match on BSSID and LANMAC." % (ssid, bssid, lanmac)
                     return 1
                 else:
                     print "Match on Unknown DB:\n%s, %s, %s\nUnknown Match on BSSID." % (ssid, bssid, lanmac)
                     return 1
             else:
-                if str(a[u'LANMAC']) == lanmac:
+                if str(u[u'LANMAC']) == lanmac:
                     print "Match on Unknown DB:\n%s, %s, %s\nUnknown Match on LANMAC." % (ssid, bssid, lanmac)
                     return 1
 
