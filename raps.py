@@ -255,7 +255,7 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
     else: #in case there's nothing in the db
         print "There is nothing in the known database, running init function."
         mongoInit(db, collk, collu, collr, "Init", "DE:AD:BE:EF:CO:FE", "DE:AD:BE:EF:CO:FE")
-        doTheMongo(db, collk, collu, collr, ssid, bssid, lanmac)
+        doTheMongo(db, collk, collu, collr, ssid, bssid)
 
 def checkRogue(db, collk, collu, collr, ssid, bssid, lanmac):
     for r in collr.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}):
