@@ -193,7 +193,7 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
         print "Multiple MACs found, please search for the device manually!"
         return -2
 
-    if collk.count({'SSID'}) > 0: #check if there's actually any APs in the db
+    if collk.count({}) > 0: #check if there's actually any APs in the db
         for k in collk.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}):
             if str(k[u'SSID']) == ssid: #check ssid match
                 if str(k[u'BSSID']) == bssid:
