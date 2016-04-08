@@ -267,6 +267,7 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
     else: #in case there's nothing in the db
         print "There is nothing in the known database, running init function."
         mongoInit(db, collk, collu, collr, "Init", "DE:AD:BE:EF:CO:FE", "DE:AD:BE:EF:CO:FE")
+        print "Being recursive with SSID: %a & BSSID: %s & LANMAC: %s" % (ssid, bssid, lanmac)
         doTheMongo(db, collk, collu, collr, ssid, bssid)
 
 def checkRogue(db, collk, collu, collr, ssid, bssid, lanmac):
