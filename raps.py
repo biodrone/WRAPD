@@ -78,7 +78,7 @@ def main(argv):
                         collk.insert(ap)
                     else:
                         collr.insert(ap)
-                    collu.delete_one({"SSID":str(u[u'SSID']), "BSSID":str(u[u'BSSID']), "LANMAC":str(u[u'LANMAC'])})
+                    collu.remove({"SSID":str(u[u'SSID']), "BSSID":str(u[u'BSSID']), "LANMAC":str(u[u'LANMAC'])})
             else:
                 for u in collu.find():
                     print u
