@@ -358,15 +358,6 @@ def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
             print "Multiple matching MACs found, do something else with this later!"
             return 1
         matchMe = matchMe[:-1]
-        #do something like check the arp on the pi here just in case the above fails
-        # arp = ""
-        # matchMe = bssid[:-1]
-        # while matchMe < 8:
-        #     Popen("/usr/sbin/arp -n | grep %s | awk '{print $3}'" % matchMe, stdin=PIPE, stdout=arp, stderror=PIPE, shell=True)
-        #     if len(arp) > 0:
-        #         print "MAC FOUND IN ARP!!1!11!!1: \n%s" % arp
-        #         return arp
-        #         break
         return 0
 
 def snmpAsk():
