@@ -191,7 +191,6 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
     """
     #if lanman doesn't find anything, automatically add the AP to collu as it's not on the LAN
     lanmac = findLanMac(bssid)
-    print "Lanmac Found for SSID: %s & BSSID: %s is %s" % (ssid, bssid, lanmac)
     if lanmac == 0:
         print "AP with SSID %s, BSSID %s is not on the LAN." % (ssid, bssid)
         ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
@@ -201,6 +200,8 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
         #multiple MACs found, do something with this later
         print "Multiple MACs found, please search for the device manually!"
         return -2
+    else:
+        print "Lanmac Found for SSID: %s & BSSID: %s is %s" % (ssid, bssid, lanmac)
 
     if collk.count({}) > 0: #check if there's actually any APs in the db
         for k in collk.find({'SSID':ssid}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}):
