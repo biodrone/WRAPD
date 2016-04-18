@@ -87,7 +87,6 @@ def main(argv):
             print "The Unknown Database is Empty."
 
     if args.cleandb:
-        #print "Cleaning %s Database(s)" % args.cleandb
         if args.cleandb.find('k') != -1:
             print "Cleaning Known DB"
             collk.remove({})
@@ -105,16 +104,14 @@ def main(argv):
             print u
         for r in collr.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}): #might need to delete the first bracket entirely
             print r
-        #print findLanMac("C4:E9:84:F8:28:73")
 
     if args.auto: #TODO: Spawn a thread based on this
         print 'Running RAPS in auto mode'
 
         scanWifi(args.interface)
         macs, ssids = readDump()
-        print ssids
-        print macs
-        #mongoTests(db, collk, collu, collr)
+        #print ssids
+        #print macs
 
         for m in macs:
             doTheMongo(db, collk, collu, collr, ssids[x], macs[x])
