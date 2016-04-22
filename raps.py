@@ -46,11 +46,7 @@ def main(argv):
     parser.add_argument('-c', '--clean', dest='cleandb', help='Clean Databases, Accepts k/r/u')
     parser.add_argument('-u', '--unknown', action='store_true', help='View the Unknown database',)
     parser.add_argument('-i', '--interface', help='Interface to Scan on')
-    # parser.add_argument('-si', '--switchIP', help='IP Address of core switch(es) or file containing IP addresses')
-    # parser.add_argument('-sc', '--snmpCommunity', help='SNMP Community of switches to be polled')
-    # parser.add_argument('-sp', '--snmpPort', help='Port that SNMP operates on')
 
-    #TODO: add arg for db location (or have a default location of /opt/raps)
     args = parser.parse_args()
 
     try:
@@ -110,8 +106,6 @@ def main(argv):
 
         scanWifi(args.interface)
         macs, ssids = readDump()
-        #print ssids
-        #print macs
 
         for m in macs:
             doTheMongo(db, collk, collu, collr, ssids[x], macs[x])
@@ -160,7 +154,6 @@ def readDump(): #parse the wifi dump .csv for MACs and SSIDs
     for (dirpath, dirnames, filenames) in walk(ipath):
         f.extend(filenames)
         break
-    #print f
     fpath = "%s/rapsdump-01.csv" % ipath
 
     #parse .csv into a list for detail grabbing
@@ -220,9 +213,6 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
                             return 2
                 else:
                     if str(k[u'LANMAC']) == lanmac:
-                        #print "Adding to Rogue DB:\n%s, %s, %s\nRAP Match on SSID and LANMAC." % ssid, bssid, lanmac
-                        #ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
-                        #collr.insert(ap)
                         print "Did you forget to add an AP to the known database?:\n%s, %s, %s\nChecking Rogue for Safety." % (ssid, bssid, lanmac)
                         if checkRogue(db, collk, collu, collr, ssid, bssid, lanmac) != 1:
                             print "Not in Rogue DB, checking Unknown DB."
@@ -332,7 +322,6 @@ def checkUnknown(db, collk, collu, collr, ssid, bssid, lanmac):
                     return 1
 
 def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
-
 #Returns:
 #XX:XX:XX:XX:XX:XX - Found MAC
 #0                 - Not Found
@@ -375,23 +364,6 @@ def snmpRead():
         mArr.append(line[0:17])
     f2.close()
     return mArr
-
-def mongoTests(db, collk, collu, collr):
-    print "collk has %s records." % collk.count()
-    for a in collk.find(): #loops over the collection and prints each document
-        print a
-    print collk.find_one()
-    print "collu has %s records." % collu.count()
-    for a in collu.find(): #loops over the collection and prints each document
-        print a
-    print collu.find_one()
-    print "collr has %s records." % collr.count()
-    for a in collr.find(): #loops over the collection and prints each document
-        print a
-    print collr.find_one()
-    #collk.delete_many({}) #remove all documents from collection
-    #collu.delete_many({})
-    #collr.delete_many({})
 
 if __name__ == "__main__":
     main(sys.argv)
