@@ -93,11 +93,8 @@ def main(argv):
 def mongoInit(db, collk, collu, collr, ssid, bssid, lanmac):
     ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
     collk.insert(ap)
-    for k in collk.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}):
     collu.insert(ap)
-    for u in collu.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}):
     collr.insert(ap)
-    for r in collr.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}):
 
 def scanWifi(scanint):
     global ipath
