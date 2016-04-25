@@ -314,7 +314,7 @@ def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
         snmp = snmpRead()
         for s in snmp:
             s = s.replace(" ", ":")
-            if lm.find(matchMe) != -1:
+            if s.find(matchMe) != -1:
                 print "LAN MAC found! %s" % s
                 foundMAC = s
                 found = found + 1
