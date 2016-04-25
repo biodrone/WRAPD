@@ -155,7 +155,6 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
     """
     #if lanman doesn't find anything, automatically add the AP to collu as it's not on the LAN
     lanmac = findLanMac(bssid)
-    print "lanmac as found by func = %s" % lanmac
     if lanmac == 0:
         print "AP with SSID %s, BSSID %s is not on the LAN." % (ssid, bssid)
         ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
@@ -305,8 +304,6 @@ def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
     matchMe = bssid[:-1]
     foundMAC = ""
 
-    print "init bssid = %s" % bssid
-
     while len(matchMe) > 8:
         if matchMe[len(matchMe) - 1] == ":":
             matchMe = matchMe[:-1]
@@ -315,7 +312,6 @@ def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
         for s in snmp:
             s = s.replace(" ", ":")
             if s.find(matchMe) != -1:
-                print "LAN MAC found! %s" % s
                 foundMAC = s
                 found = found + 1
         if found == 1:
