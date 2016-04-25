@@ -307,6 +307,8 @@ def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
     vendor = bssid[:8]
     matchMe = bssid[:-1]
 
+    print "init bssid = %s" % bssid
+
     while len(matchMe) > 8:
         if matchMe[len(matchMe) - 1] == ":":
             matchMe = matchMe[:-1]
