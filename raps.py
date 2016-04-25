@@ -73,10 +73,13 @@ def main(argv):
             collu.remove({})
 
     if args.temp:
+        print "Known DB:"
         for k in collk.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}): #might need to delete the first bracket entirely
             print k
+        print "Unknown DB:"
         for u in collu.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}): #might need to delete the first bracket entirely
             print u
+        print "Rogue DB:"
         for r in collr.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}): #might need to delete the first bracket entirely
             print r
 
