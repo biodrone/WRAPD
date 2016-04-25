@@ -87,6 +87,8 @@ def main(argv):
 
         scanWifi(args.interface)
         macs, ssids = readDump()
+        print macs
+        print ssids
 
         for m in macs:
             doTheMongo(db, collk, collu, collr, ssids[x], macs[x])
