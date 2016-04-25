@@ -321,6 +321,7 @@ def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
                 found = found + 1
         if found == 1:
             return s
+            print "Found mac from func: %s" % s
             break
         elif found > 1:
             print "Multiple matching MACs found, do something else with this later!"
