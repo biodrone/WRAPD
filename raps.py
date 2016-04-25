@@ -110,12 +110,12 @@ def scanWifi(scanint):
     tmp1 = open("/opt/raps/tmp.txt", 'r')
     if tmp1.read().find("mon") == -1:
         call(['airmon-ng', 'start', scanint])
-        time.sleep(10)
+        time.sleep(5)
     tmp1.close()
     monint = 'mon0'
     aircom = "airodump-ng --output-format csv --write %s/rapsdump %s" % (ipath, monint)
     p = Popen([aircom], stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
-    time.sleep(10)
+    time.sleep(20)
     os.kill(p.pid, SIGTERM)
     call(['airmon-ng', 'stop', monint])
 
