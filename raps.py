@@ -159,6 +159,7 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
     """
     #if lanman doesn't find anything, automatically add the AP to collu as it's not on the LAN
     lanmac = findLanMac(bssid)
+    print "lanmac as found by func = %s" % lanmac
     if lanmac == 0:
         print "AP with SSID %s, BSSID %s is not on the LAN." % (ssid, bssid)
         ap = {"SSID":ssid, "BSSID":bssid, "LANMAC":lanmac}
