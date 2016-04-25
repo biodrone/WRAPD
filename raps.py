@@ -341,7 +341,7 @@ def snmpRead():
         line = line[1]
         mArr.append(line[0:17])
     f2.close()
-    return m
+    return mArr
 
 if __name__ == "__main__":
     main(sys.argv)
