@@ -91,6 +91,8 @@ def main(argv):
         print ssids
 
         for m in macs:
+            print ssids[x]
+            print macs[x]
             doTheMongo(db, collk, collu, collr, ssids[x], macs[x])
             x = x + 1
 
