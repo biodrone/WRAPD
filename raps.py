@@ -45,7 +45,7 @@ def main(argv):
         if collu.count({}) > 0: #check if there's actually any APs in the db
             print "The Unknown Database has %s Records" % collu.count()
             if raw_input("Do you want to organise the Unkown DB into Known and Rogue? [y/N]").find("y") != -1:
-                for u in collu.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}): #might need to delete the first bracket entirely
+                for u in collu.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}):
                     print u
                     ap = {"SSID":str(u[u'SSID']), "BSSID":str(u[u'BSSID']), "LANMAC":str(u[u'LANMAC'])}
                     print ap
@@ -73,13 +73,13 @@ def main(argv):
 
     if args.temp:
         print "Known DB:"
-        for k in collk.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}): #might need to delete the first bracket entirely
+        for k in collk.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}):
             print k
         print "Unknown DB:"
-        for u in collu.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}): #might need to delete the first bracket entirely
+        for u in collu.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}):
             print u
         print "Rogue DB:"
-        for r in collr.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}): #might need to delete the first bracket entirely
+        for r in collr.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}):
             print r
 
     if args.auto:
