@@ -329,9 +329,9 @@ def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
 
 def snmpAsk():
     f1 = open("/opt/raps/mib.txt", 'w')
-    Popen('snmpwalk -v 2c -c fyp 192.168.1.4 1.3.6.1.2.1.17.4.3.1.1', stdin=PIPE, stdout=f1, stderr=PIPE, shell=True)
+    Popen('snmpwalk -v 2c -c fyp 192.168.1.4 1.3.6.1.2.1.17.4.3.1.1', stdin=PIPE, stdout=f1, shell=True)
     time.sleep(5)
-    f1.close() #maybe try doing this in the same file...?
+    f1.close()
 
 def snmpRead():
     mArr = []
