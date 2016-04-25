@@ -36,7 +36,6 @@ def main(argv):
         print "Could not connect to MongoDB: %s" % e
         sys.exit()
 
-    #TODO: do some logic here to determine if a db exists already
     #define mongo DBs
     db = conn.aps
     collk = db.known_aps
@@ -81,7 +80,7 @@ def main(argv):
         for r in collr.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}): #might need to delete the first bracket entirely
             print r
 
-    if args.auto: #TODO: Spawn a thread based on this
+    if args.auto:
         print 'Running RAPS in auto mode'
 
         scanWifi(args.interface)
@@ -116,12 +115,12 @@ def scanWifi(scanint):
         call(['airmon-ng', 'start', scanint])
         time.sleep(10)
     tmp1.close()
-    monint = 'mon0' #TODO: Grab this from ifconfig file
+    monint = 'mon0'
     aircom = "airodump-ng --output-format csv --write %s/rapsdump %s" % (ipath, monint)
     p = Popen([aircom], stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
     time.sleep(10)
     os.kill(p.pid, SIGTERM)
-    call(['airmon-ng', 'stop', monint]) #TODO: make more intelligent for different OSes?
+    call(['airmon-ng', 'stop', monint])
 
 def readDump(): #parse the wifi dump .csv for MACs and SSIDs
     global ipath
@@ -129,7 +128,6 @@ def readDump(): #parse the wifi dump .csv for MACs and SSIDs
     macs = []
     ssids = []
 
-    #TODO: use this to get the latest file
     #get files in dir (for when there's multiple files)
     for (dirpath, dirnames, filenames) in walk(ipath):
         f.extend(filenames)
