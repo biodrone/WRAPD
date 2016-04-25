@@ -165,7 +165,6 @@ def doTheMongo(db, collk, collu, collr, ssid, bssid):
         collu.insert(ap)
         return -1
     elif lanmac == 1:
-        #multiple MACs found, do something with this later
         print "Multiple MACs found, please search for the device manually!"
         return -2
     else:
