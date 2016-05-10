@@ -21,7 +21,7 @@ def main(argv):
     x = 0
 
     parser = argparse.ArgumentParser(usage='Find Rogue Access Points within scanning range')
-    parser.add_argument('-t', '--temp', action='store_true', help='Real basic temp stuffs')
+    parser.add_argument('-s', '--show', action='store_true', help='Shows the current databases')
     parser.add_argument('-a', '--auto', action='store_true', help='Run in Auto Mode',) #maybe make this the default without flags?
     parser.add_argument('-c', '--clean', dest='cleandb', help='Clean Databases, Accepts k/r/u')
     parser.add_argument('-u', '--unknown', action='store_true', help='View the Unknown database',)
@@ -71,7 +71,7 @@ def main(argv):
             print "Cleaning Unknown DB"
             collu.remove({})
 
-    if args.temp:
+    if args.show:
         print "Known DB:"
         for k in collk.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}):
             print k
