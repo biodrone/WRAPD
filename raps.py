@@ -126,6 +126,7 @@ def readDump(): #parse the wifi dump .csv for MACs and SSIDs
         l1 = list(r)
 
     for x in l1:
+        print x
         if str(x).find("Station MAC") != -1: #filter out station macs
             break
         if str.find(str(x), ":") != -1: #only get macs in final list
