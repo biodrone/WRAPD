@@ -31,7 +31,6 @@ def main(argv):
 
     try:
         conn=pymongo.MongoClient()
-        print "Mongo Working"
     except pymongo.errors.ConnectionFailure, e:
         print "Could not connect to MongoDB: %s" % e
         sys.exit()
@@ -88,8 +87,6 @@ def main(argv):
 
         scanWifi(args.interface)
         macs, ssids = readDump()
-        print macs
-        print ssids
 
         for m in macs:
             doTheMongo(db, collk, collu, collr, ssids[x], macs[x])
