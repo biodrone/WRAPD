@@ -109,7 +109,8 @@ def scanWifi(scanint):
     p = Popen([aircom], stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
     time.sleep(20)
     os.kill(p.pid, SIGTERM)
-    call(['airmon-ng', 'stop', monint])
+    #call(['airmon-ng', 'stop', monint])
+    Popen("airmon-ng stop %s" % monint, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
 
 def readDump(): #parse the wifi dump .csv for MACs and SSIDs
     global ipath
