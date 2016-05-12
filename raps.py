@@ -20,7 +20,7 @@ def main(argv):
     global ipath
     x = 0
 
-    parser = argparse.ArgumentParser(usage='Find Rogue Access Points within scanning range')
+    parser = argparse.ArgumentParser(usage='Rogue Access Point Scanner - Find Rogue Access Points Within Scanning Range')
     parser.add_argument('-s', '--show', action='store_true', help='Shows the current databases')
     parser.add_argument('-a', '--auto', action='store_true', help='Run in Auto Mode',) #maybe make this the default without flags?
     parser.add_argument('-c', '--clean', dest='cleandb', help='Clean Databases, Accepts k/r/u')
@@ -83,7 +83,7 @@ def main(argv):
             print r
 
     if args.auto:
-        print 'Running RAPS in auto mode'
+        print 'Running RAPS in Auto Mode'
 
         scanWifi(args.interface)
         macs, ssids = readDump()
