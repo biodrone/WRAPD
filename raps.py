@@ -101,18 +101,10 @@ def mongoInit(db, collk, collu, collr, ssid, bssid, lanmac):
 def scanWifi(scanint):
     global ipath
 
-    #put ifconfig stats into a temp file to find monitor interfaces
-    tmp0 = open("/opt/raps/tmp.txt", 'w')
-    Popen('ifconfig', stdin=PIPE, stdout=tmp0, stderr=PIPE, shell=True)
-    tmp0.close()
-    #read the temp file to see if monitor mode int exists
-    tmp1 = open("/opt/raps/tmp.txt", 'r')
-    if tmp1.read().find("mon") == -1:
-        call(['airmon-ng', 'start', scanint])
-        time.sleep(5)
-    tmp1.close()
+    call(['airmon-ng', 'start', scanint])
+    time.sleep(5)
     monint = 'mon0'
-    aircom = "airodump-ng --output-format csv --write %s/rapsdump %s" % (ipath, monint)
+    aircom = "airodump-ng --output-format csv --write %s/rapsdump %s &" % (ipath, monint)
     p = Popen([aircom], stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
     time.sleep(20)
     os.kill(p.pid, SIGTERM)
@@ -123,11 +115,6 @@ def readDump(): #parse the wifi dump .csv for MACs and SSIDs
     f = []
     macs = []
     ssids = []
-
-    #get files in dir (for when there's multiple files)
-    for (dirpath, dirnames, filenames) in walk(ipath):
-        f.extend(filenames)
-        break
     fpath = "%s/rapsdump-01.csv" % ipath
 
     #parse .csv into a list for detail grabbing
@@ -141,6 +128,7 @@ def readDump(): #parse the wifi dump .csv for MACs and SSIDs
         if str.find(str(x), ":") != -1: #only get macs in final list
             macs.append(str.strip(str.split(str(x), ',')[0], "[ '")) #split to only get MAC and then remove first 2 chars ([')
             ssids.append(str.strip(str.split(str(x), ',')[13])) #split to only get SSID and then remove whitespace
+    os.remove("%s/rapsdump-01.csv") % ipath
     #return the 2 lists
     return macs, ssids
 
@@ -323,10 +311,8 @@ def findLanMac(bssid): #takes the bssid and finds the lan mac of the AP
         return 0
 
 def snmpAsk():
-    f1 = open("/opt/raps/mib.txt", 'w')
-    Popen('snmpwalk -v 2c -c fyp 192.168.1.4 1.3.6.1.2.1.17.4.3.1.1', stdin=PIPE, stdout=f1, shell=True)
+    Popen('snmpwalk -v 2c -c fyp 192.168.1.4 1.3.6.1.2.1.17.4.3.1.1 > /opt/raps/mib.txt', stdin=PIPE, stdout=PIPE, shell=True)
     time.sleep(5)
-    f1.close()
 
 def snmpRead():
     mArr = []
