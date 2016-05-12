@@ -128,7 +128,7 @@ def readDump(): #parse the wifi dump .csv for MACs and SSIDs
         if str.find(str(x), ":") != -1: #only get macs in final list
             macs.append(str.strip(str.split(str(x), ',')[0], "[ '")) #split to only get MAC and then remove first 2 chars ([')
             ssids.append(str.strip(str.split(str(x), ',')[13])) #split to only get SSID and then remove whitespace
-    os.remove("%s/rapsdump-01.csv" % ipath)
+    #os.remove("%s/rapsdump-01.csv" % ipath)
     #return the 2 lists
     return macs, ssids
 
