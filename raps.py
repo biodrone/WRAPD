@@ -31,6 +31,7 @@ def main(argv):
 
     try:
         conn=pymongo.MongoClient()
+        print "Mongo Working"
     except pymongo.errors.ConnectionFailure, e:
         print "Could not connect to MongoDB: %s" % e
         sys.exit()
