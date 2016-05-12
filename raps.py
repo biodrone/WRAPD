@@ -55,7 +55,7 @@ def main(argv):
                         collr.insert(ap)
                     collu.remove({"SSID":str(u[u'SSID']), "BSSID":str(u[u'BSSID']), "LANMAC":str(u[u'LANMAC'])})
             else:
-                for u in collu.find():
+                for u in collu.find({}, {'SSID':1, 'BSSID':1, 'LANMAC':1, '_id':0}):
                     print u
         else:
             print "The Unknown Database is Empty."
