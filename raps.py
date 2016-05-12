@@ -101,7 +101,8 @@ def mongoInit(db, collk, collu, collr, ssid, bssid, lanmac):
 def scanWifi(scanint):
     global ipath
 
-    call(['airmon-ng', 'start', scanint])
+    #call(['airmon-ng', 'start', scanint])
+    Popen("airmon-ng start %s" % scanint, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
     time.sleep(5)
     monint = 'mon0'
     aircom = "airodump-ng --output-format csv --write %s/rapsdump %s" % (ipath, monint)
