@@ -1,5 +1,26 @@
 #!/usr/bin/python
 
+"""
+RAPS - Rogue AP Scanner(Suite)
+
+author: bi0dr0ned at gmail
+
+General TODO:
+
+- Use threading for things because parallelisation
+- Implement attack methods once an AP is found
+    - Reaver
+    - Honeypot
+- Use curses or some form of GUI to display log file to terminal
+- Add an install option
+- Have a DB of known default SSIDs for quick detection
+- Fix mongo DBs because currently everything is going towards the known APs DB,
+    need to go to unknown if not in known as known will be preconfigured (or possibly set up on first run?)
+- Have a point that the user can see the contents of the unknown DB and pick whether to add to known or rogue
+
+"""
+
+
 import os
 from os import walk
 import subprocess
