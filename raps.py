@@ -351,5 +351,8 @@ def snmpRead():
     f2.close()
     return mArr
 
+def checkInstall():
+    #place to check if the prereqs are installed
+
 if __name__ == "__main__":
     main(sys.argv)
